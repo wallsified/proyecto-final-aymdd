@@ -47,5 +47,3 @@ SEABORN_THEME: str = "whitegrid"
 
 # Aseguramos que las carpetas de salida existan desde el primer import.
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-# FIGURES_DIR.mkdir(parents=True, exist_ok=True)
-# TABLES_DIR.mkdir(parents=True, exist_ok=True)

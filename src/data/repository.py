@@ -1,8 +1,11 @@
-"""Repositorio de datos (patrón *Repository*).
+"""Repositorio de datos
 
-``DataRepository`` es la única clase autorizada a leer el CSV. Expone
-un ``pandas.DataFrame`` validado contra ``DatasetSchema`` y un objeto
-``DatasetMetadata`` con la información de la fuente.
+DataRepository es la única clase autorizada a leer un CSV del
+proyecto. Expone un pandas.DataFrame y un objeto DatasetMetadata
+con la información de la fuente (si es que la hay)
+
+Soporta varios datasets coexistiendo, basta con instanciar el
+repositorio una vez por cada uno, pasando su ruta en el constructor.
 """
 
 from __future__ import annotations
@@ -13,12 +16,17 @@ from pathlib import Path
 import pandas as pd
 
 from src import config
-from src.data.schema import DatasetSchema
+from ..data.dictionary import OriginalDataDictionary
+
+# instancia única del diccionario de datos original, para que el repositorio pueda
+# referenciarlo al cargar el dataset original (y también para que los esquemas puedan
+# referenciarlo al describir columnas sin tener que repetir la descripción en cada esquema)
+ORIGINAL_DATA_DICTIONARY = OriginalDataDictionary()
 
 
 @dataclass(frozen=True)
 class DatasetMetadata:
-    """Metadatos inmutables de la fuente de datos.
+    """Metadatos originales de la fuente de datos.
 
     Attributes
     ----------
@@ -26,13 +34,14 @@ class DatasetMetadata:
         Nombre de la fuente / publicación.
     title:
         Título del dataset o publicación.
-    url:
-        URL de la fuente o publicación.
     extraction_date:
         Fecha de extracción o corte de los datos (ISO-8601).
-
     path:
         Ruta absoluta al CSV.
+    url:
+        URL de la fuente o publicación.
+    encoding:
+        Codificación del archivo.
     """
 
     source: str
@@ -54,40 +63,54 @@ class DatasetMetadata:
 
 
 class DataRepository:
-    """Carga y valida el dataset de incidencia delictiva.
+    """Carga y (opcionalmente) valida un dataset desde un CSV.
 
     Parameters
     ----------
     path:
-        Ruta al CSV. Por defecto usa ``config.DATASET_CSV``.
-    schema:
-        Esquema a aplicar. Por defecto ``DatasetSchema()``.
+        Ruta al CSV. Si se omite, se usa config.DATASET_CSV.1
     metadata:
-        Metadatos de la fuente. Si se omite, se construyen desde
-        ``scripts.config``.
+        Metadatos completos. Si se omite, se construyen a partir de
+        config y de los overrides source/title/... (si los hay).
+    source, title, extraction_date, url, encoding:
+        Overrides convenientes para los metadatos sin tener que armar
+        un :class:DatasetMetadata completo.
 
     Notes
     -----
-    La carga es *lazy*: el archivo no se lee hasta llamar a
-    :meth:`load`. Esto facilita tests y composición.
+    La carga es lazy: el archivo no se lee hasta llamar load().
     """
 
     def __init__(
         self,
-        path: Path | None = None,
-        schema: DatasetSchema | None = None,
+        path: str | Path | None = None,
+        *,
         metadata: DatasetMetadata | None = None,
+        source: str | None = None,
+        title: str | None = None,
+        extraction_date: str | None = None,
+        url: str | None = None,
+        encoding: str | None = None,
     ) -> None:
-        self._path: Path = Path(path) if path is not None else config.DATASET_CSV
-        self._schema: DatasetSchema = schema or DatasetSchema()
-        self._metadata: DatasetMetadata = metadata or DatasetMetadata(
-            source=config.DATA_SOURCE,
-            extraction_date=config.DATA_EXTRACTION_DATE,
-            title=config.DATA_TITLE,
-            url=config.DATA_URL,
-            path=self._path,
-            encoding=config.DATA_ENCODING,
-        )
+        path_provided = path is not None
+        self._path: Path = Path(path) if path_provided else config.DATASET_CSV
+
+        if metadata is not None:
+            self._metadata = metadata
+        else:
+            self._metadata = DatasetMetadata(
+                source=source if source is not None else config.DATA_SOURCE,
+                title=title if title is not None else config.DATA_TITLE,
+                extraction_date=(
+                    extraction_date
+                    if extraction_date is not None
+                    else config.DATA_EXTRACTION_DATE
+                ),
+                url=url if url is not None else config.DATA_URL,
+                encoding=encoding if encoding is not None else config.DATA_ENCODING,
+                path=self._path,
+            )
+
         self._df: pd.DataFrame | None = None
 
     @property
@@ -95,24 +118,20 @@ class DataRepository:
         return self._metadata
 
     @property
-    def schema(self) -> DatasetSchema:
-        return self._schema
-
-    @property
     def df(self) -> pd.DataFrame:
         if self._df is None:
             raise RuntimeError(
-                "El DataFrame aún no se ha cargado. Llama a `load()` primero."
+                "El DataFrame aún no se ha cargado. Utiliza load() primero."
             )
         return self._df
 
     def load(self) -> pd.DataFrame:
-        """Lee el CSV, valida columnas y aplica dtypes.
+        """Lee el CSV y, si el esquema lo pide, aplica dtypes y validación.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame validado y tipado.
+            DataFrame cargado (validado y tipado si el esquema lo pide).
         """
         if not self._path.exists():
             raise FileNotFoundError(
@@ -120,24 +139,15 @@ class DataRepository:
                 f"Verifica que el archivo exista y que la ruta sea correcta."
             )
 
-        df = pd.read_csv(
-            self._path,
-            dtype={k: v for k, v in self._schema.columns.items() if k != "fecha"},
-            parse_dates=list(self._schema.parse_dates),
-            encoding=self._metadata.encoding,
-        )
-
-        self._validate_columns(df)
+        read_kwargs: dict = {"encoding": self._metadata.encoding}
+        df = pd.read_csv(self._path, **read_kwargs)
         self._df = df
         return df
 
-    def _validate_columns(self, df: pd.DataFrame) -> None:
-        expected = set(self._schema.expected_columns)
-        actual = set(df.columns)
-        missing = expected - actual
-        unexpected = actual - expected
-        if missing or unexpected:
-            raise ValueError(
-                f"Columnas inconsistentes con DatasetSchema. "
-                f"Faltantes={sorted(missing)}, inesperadas={sorted(unexpected)}."
+    def dictionary(self) -> pd.DataFrame:
+        """Devuelve el diccionario de datos del dataset original."""
+        if self._df is None:
+            raise RuntimeError(
+                "El DataFrame aún no se ha cargado. Utiliza load() primero."
             )
+        return ORIGINAL_DATA_DICTIONARY.data_dictionary(self._df)

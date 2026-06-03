@@ -104,16 +104,16 @@ class PreprocessingPipeline:
     def _step_drop_columns(self, df: pd.DataFrame) -> pd.DataFrame:
         print("[1] Eliminando columnas declaradas en drop_columns")
         if not self._drop_columns:
-            print("   (ninguna columna configurada)")
+            print("(ninguna columna configurada)")
             return df
 
         existing = [c for c in self._drop_columns if c in df.columns]
         missing = [c for c in self._drop_columns if c not in df.columns]
         if existing:
             df = df.drop(columns=existing)
-        print(f"   Eliminadas: {existing or 'ninguna'}")
+        print(f" Eliminadas: {existing or 'ninguna'}")
         if missing:
-            print(f"   No encontradas (ignoradas): {missing}")
+            print(f" No encontradas (ignoradas): {missing}")
         return df
 
     def _step_convert_dates(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -127,7 +127,7 @@ class PreprocessingPipeline:
         df[self._date_col] = parsed
         print(f"   OK={n_ok:,} / fallidos={n_failed:,}")
         if n_ok:
-            print(f"   Rango: {parsed.min().date()} → {parsed.max().date()}")
+            print(f" Rango: {parsed.min().date()} → {parsed.max().date()}")
 
         return df
 
@@ -136,14 +136,14 @@ class PreprocessingPipeline:
         critical = [c for c in self._critical_cols if c in df.columns]
         before = len(df)
         df = df.dropna(subset=critical).reset_index(drop=True)
-        print(f"   Filas: {before:,} -> {len(df):,} (eliminadas: {before - len(df):,})")
+        print(f"Filas: {before:,} -> {len(df):,} (eliminadas: {before - len(df):,})")
         return df
 
     def _step_drop_duplicates(self, df: pd.DataFrame) -> pd.DataFrame:
         print("[4] Eliminando duplicados exactos")
         before = len(df)
         df = df.drop_duplicates().reset_index(drop=True)
-        print(f"   Filas: {before:,} -> {len(df):,} (eliminadas: {before - len(df):,})")
+        print(f"Filas: {before:,} -> {len(df):,} (eliminadas: {before - len(df):,})")
         return df
 
 
