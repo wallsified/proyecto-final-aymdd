@@ -90,6 +90,16 @@ class PreprocessingPipeline:
         working = self._step_drop_nulls(working)
         working = self._step_drop_duplicates(working)
 
+        if "entidad" in working.columns:
+            print("[5] Normalizando nombres de entidades federativas")
+            working["entidad"] = working["entidad"].replace(
+                {
+                    "Veracruz de Ignacio de la Llave": "Veracruz",
+                    "Coahuila de Zaragoza": "Coahuila",
+                    "Michoacán de Ocampo": "Michoacán",
+                }
+            )
+
         return working
 
     def save(self, df: pd.DataFrame) -> None:
