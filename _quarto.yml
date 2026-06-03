@@ -8,9 +8,9 @@ execute:
 jupyter: python3
 
 book:
-  title: "Minería de Datos Aplicada a México"
-  output-file: "Minería de Datos Aplicada a México - El Caso del Metro de la Ciudad de México"
-  subtitle: "El Caso del Metro de la Ciudad de México"
+  title: "Análisis de la Incidencia Delicitiva Estatal"
+  output-file: "Incidencia_Delicitiva_Estatal.html"
+  subtitle: "México 2015 - 2025"
   author:
     - name: "Méndez Ávila Luis Geovanni"
       email: "lgma77@ciencias.unam.mx"
