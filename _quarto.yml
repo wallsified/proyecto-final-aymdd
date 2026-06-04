@@ -8,9 +8,9 @@ execute:
 jupyter: python3
 
 book:
-  title: "Análisis de la Incidencia Delicitiva Estatal"
+  title: "Incidencia Delictiva Estatal"
   output-file: "Incidencia_Delicitiva_Estatal.html"
-  subtitle: "México 2015 - 2025"
+  subtitle: "(México 2015 - 2025)"
   author:
     - name: "Méndez Ávila Luis Geovanni"
       email: "lgma77@ciencias.unam.mx"
@@ -43,7 +43,6 @@ format:
     citeproc: true
     citations-hover: true
     citation-location: document
-    # include-after-body: "styles/footer.html"
     html-math-method: katex
     code-fold: true
     code-summary: "Mostrar código"
@@ -55,7 +54,7 @@ format:
     toc: true
     toc-depth: 3
     toc-title: "Contenido del Documento"
-    toc-location: right
+    toc-location: left
     fig-align: center
     smooth-scroll: true
     number-sections: false
@@ -70,3 +69,10 @@ format:
       - text: "Descargar PDF"
         href: "example.com"
         icon: "file-earmark-pdf-fill"
+    grid:
+      # verificar tamaños para ajustar en la mayoria de pantallas
+        sidebar-width: 350px
+        body-width: 1800px
+        #margin-width: 0px
+        gutter-width: 50px
+    page-navigation: false

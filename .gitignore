@@ -243,3 +243,7 @@ __marimo__/
 *.bbl
 *.bcf
 *.run.xml
+
+# Jupyter cache
+.ipynb_checkpoints/
+.jupyter_cache/
