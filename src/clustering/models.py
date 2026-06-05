@@ -108,3 +108,20 @@ class CrimeClusteringPipeline:
         })
         
         return results
+    
+    def save(self, df: pd.DataFrame) -> None:
+        """Extrae la segmentación estructurada y la persiste en la ruta configurada."""
+        df_segmentado = pd.DataFrame({
+            "entidad": df["entidad"],
+            "cluster_bienes_juridicos": df["cluster"]
+        })
+        
+        output_path = config.CLUSTER_CSV
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        df_segmentado.to_csv(output_path, index=False, encoding=config.DATA_ENCODING)
+        
+        print(
+            f"[Clustering] Archivo de segmentación guardado en:\n {output_path}\n"
+            f" Un total de {len(df_segmentado)} entidades federativas exportadas."
+        )

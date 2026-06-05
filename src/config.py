@@ -27,6 +27,8 @@ DATASET_CSV: Path = DATA_DIR / "INM_estatal_dic25.csv"
 # Salida del pipeline de preprocesamiento.
 PROCESSED_CSV: Path = PROCESSED_DIR / "INM_estatal_dic25_clean.csv"
 
+CLUSTER_CSV = PROCESSED_DIR / "entidades_segmentadas.csv"
+
 # Metadatos de la fuente de datos.
 # Se centralizan aquí para que ``DataRepository`` los reporte en el
 # punto 1 del EDA ("fuente y fecha de extracción").
