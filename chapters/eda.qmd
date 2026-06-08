@@ -1,0 +1,269 @@
+---
+title: "Análisis Exploratorio de Datos"
+---
+
+Haremos un EDA para conocer el dataset en profundir y poder identificar patrones, tendencias y relaciones entre las variables.
+Esto nos permitirá tomar decisiones informadas sobre cómo abordar el problema de la incidencia delictiva más adelante en el proyecto,
+principalmente para crear el modelo de predicción adecuado a este problema.
+
+Para esto, haremos limpieza, análisis estadístico, detección de outliers y visualización de los datos.
+
+## Diccionario de Datos
+
+```{python}
+#| label: data-load-dictionary
+import sys
+from pathlib import Path
+
+# Resuelve el problema de las ubicaciones de los scripts
+sys.path.insert(0, str(Path.cwd().parent))
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from src import config
+from src.data import DataRepository
+from src.preprocessing import PreprocessingPipeline
+from src.eda import StatisticsAnalyzer, OutlierDetector
+
+# Tema visual por defecto del proyecto.
+sns.set_theme(style=config.SEABORN_THEME, palette=config.PLOT_PALETTE)
+pd.set_option("display.max_columns", 20)
+pd.set_option("display.width", 140)
+pd.set_option("display.max_colwidth", 200)
+
+repo = DataRepository()
+dataframe = repo.load()
+repo.dictionary()
+```
+
+## Overview del Dataset
+
+```{python}
+#| label: dataset-overview
+dataframe
+```
+
+El dataset contiene 413,952 registros que abarcan desde enero de 2015 hasta diciembre de 2025 (11 años).
+Los datos están organizados a nivel estatal con granularidad mensual (32 entidades × 40+ tipos de delito × 132 meses),
+lo que nos permite hacer análisis longitudinales de la evolución del delito en cada estado.
+
+## Calidad y Limpieza de los Datos
+
+Haremos lo siguiente con el dataset original:
+
+- Borraremos las columnas año y mes para poder trabajar únicamente con fecha. Posteriormente, ésta última pasará a ser de tipo datatime.
+- `entidad_federativa` es un duplicado de `entidad`, por lo que borramos ésta columna.
+- `clave_entidad` no nos es de útilidad al ya tener el nombre de las entidades, por lo que borramos ésta columna.
+- Analizamos el dataset en busca de duplicados y valores nulos.
+- Consideraremos que una entrada es inválida si tiene valores NaN en `incidencia_delictiva`, `fecha` y `entidad`. Una vez detectadas,
+serán eliminadas.
+- Por revisión manual, vemos que algunos estados tienen su nombre completo, como `Veracruz de Ignacio de la Llave`. Acortaremos el nombre
+de estos estados para una visualización más limpia de la información.
+
+```{python}
+#| label: data-cleaning-quality
+cleaning_pipeline = PreprocessingPipeline(
+    drop_columns=["anio", "clave_ent", "mes", "entidad_federativa"]
+)
+clean_dataset = cleaning_pipeline.run(dataframe)
+# reorganizamos las columnas para tener la fecha como columna inicial del dataset
+clean_dataset = clean_dataset.iloc[:, [5, 0, 1, 2, 3, 4, 6]]
+cleaning_pipeline.save(clean_dataset)
+```
+
+Vemos que, a pesar de ser un dataset de origen gubernamental, éste no contiene duplicados ni entradas inválidas. Por lo que solo se
+realizó la conversión de fechas y la eliminación de las columnas con las que no trabajaremos.
+
+## Estadísticas Descriptivas Numéricas
+
+En base a la naturaleza de nuestro dataset, el análisis estadístico se centrará principalmente en la variable `incidencia_delictiva`,
+que representa el número de delitos reportados para cada combinación de estado, tipo de delito y fecha.
+
+Veamos algunas estadísticas descriptivas clave para esta variable:
+
+```{python}
+#| label: descriptive-statistics
+repo = DataRepository("../data/processed/INM_estatal_dic25_clean.csv")
+dataframe = repo.load()
+stats = StatisticsAnalyzer(dataframe)
+stats.numeric_stats()
+```
+
+La media (52.5) es muy superior a la mediana (2.0), lo que indica un sesgo severo hacia la derecha. La mayoría de los registros
+tienen baja incidencia (~2 delitos), pero algunos delitos registran valores enormes (siendo 9,968 el valor máximo). Sin embargo,
+en un contexto real, la CDMX y el EdoMex son probablemente las entidades con valores más altos y más concentrados debido a su población
+y urbanización. Validaremos esto más adelante.
+
+En ese sentido, esto no sería (necesariamente) un sesgo en los datos, si no que refleja disparidades geográficas genuinas en la delincuencia.
+Sin embargo, eso no significa que, nuevamente en un contexto real, no se reporte de la misma manera en otros estados.
+
+```{python}
+#| label: delective-incidence-histograms
+#| fig-cap: "Histogramas de Incidencia Delictiva por Estado"
+
+fig, axes = plt.subplots(2, 1, figsize=(10, 12))
+
+sns.histplot(
+    data=dataframe,
+    x="incidencia_delictiva",
+    bins=50,
+    color="crimson",
+    ax=axes[0]
+)
+axes[0].set_title("A) Histograma en Escala Original\n(Sesgo Extremo hacia la Derecha)", fontsize=12, fontweight="bold")
+axes[0].set_xlabel("Número de Delitos por Registro")
+axes[0].set_ylabel("Frecuencia (Cantidad de Registros)")
+axes[0].grid(True, linestyle="--", alpha=0.5)
+
+df_non_zero = dataframe[dataframe["incidencia_delictiva"] > 0]
+sns.histplot(
+    data=df_non_zero,
+    x="incidencia_delictiva",
+    kde=True,
+    log_scale=True,
+    color="darkblue",
+    ax=axes[1]
+)
+axes[1].set_title("B) Histograma en Escala Logarítmica\n(Estructura Interna de la Incidencia)", fontsize=12, fontweight="bold")
+axes[1].set_xlabel("Número de Delitos por Registro (Escala Logarítmica)")
+axes[1].set_ylabel("Frecuencia (Cantidad de Registros)")
+axes[1].grid(True, linestyle="--", alpha=0.5)
+
+plt.suptitle("Análisis de Distribución de la Incidencia Delictiva en México", fontsize=15, fontweight="bold", y=1.02)
+plt.tight_layout()
+plt.show()
+```
+
+El primer gráfico muestra una distribución con un sesgo hacia la derecha extremadamente severa. La inmensa mayoría de los registros
+del dataset se concentran de forma masiva en valores muy cercanos a cero (recordemos que la mediana del dataset es de 2 delitos por registro).
+Esto se debe a que existen muchas categorías de delitos poco comunes o entidades con menor población que reportan frecuentemente cero u
+muy pocas incidencias mensuales de estos delitos no tan comúnes. Visualmente, esto genera una gran "pared" en el extremo izquierdo
+y una cola invisible infinitamente larga hacia la derecha que se extiende hasta el valor máximo de 9,968.
+
+Con el segundo gráfico queremos reevelar la distribución real que queda oculta bajo el sesgo. Para esto se aplicó una escala logarítmica
+sobre el eje de las abscisas (filtrando los registros con elitos). Esto nos da distribución con dos picos:
+- El primero muestra cuando se registran de 1 a 3 delitos en promedio. Esto representa la gran masa de reportes delictivos de baja
+ocurrencia o zonas con baja densidad demográfica.
+- El segundo muestra cuando se registran de 30 a 100 delitos en promedio. Esto representa la acumulación de delitos altamente recurrentes
+(como variantes de robos) en zonas urbanas o de alta incidencia.
+
+## Estadísticas Descriptivas Categóricas
+
+```{python}
+#| label: categorical-stats
+stats.categorical_stats()
+```
+
+En cuanto a las variables categóricas del conjunto de datos podemos notar hechos bastante interesantes a pesar de la inmensidad del dataset:
+
+- El dataset es de 11 años, sin embargo, solo hay 132 fechas únicas, con la fecha inicial siendo el 01 de enero de 2015
+- La moda del dataset tiene algunos resultados curiosos. Este conjunto de datos es simetrico para cada estado, ya que existen 12936
+líneas para c/u. Entonces, al querer cálcular la moda se toma el valor inicial de manera alfabética y resulta ser Aguascalientes.
+Sin embargo, esto no significa que sea la entidad con mayor apariciones del dataset.
+- Lo anterior pasa de igual manera con la fecha, ya que toma la primera fecha del dataset para calcular este valor.
+- El dataset reporta 40 tipos de delitos únicos reportados, con Robo siendo la categoría principal.
+
+Veamos ahora un análisis más detallado de las variables categóricas.
+
+### Delitos más Comunes
+
+```{python}
+#| label: most-common-crimes
+#| fig-cap: "Delitos más Comunes en México (2015-2025)"
+crime_counts = dataframe["tipo_delito"].value_counts().head(10)
+
+fig, ax = plt.subplots(figsize=(10, 4))
+crime_counts.plot(kind="barh", ax=ax, color="steelblue")
+ax.set_title("Top 10 Tipos de Delito", fontsize=13, fontweight="bold")
+ax.set_xlabel("Número de Registros")
+ax.invert_yaxis()
+
+# Añade valores en las barras
+for i, v in enumerate(crime_counts.values):
+    ax.text(v + 1000, i, f"{v:,}", va="center", fontsize=10)
+
+plt.tight_layout()
+plt.show()
+```
+
+Como se mencionaba en la tabla anterior, robo es el delito más reportado, seguido de homicidio y lesiones. Algo a recordar
+es que aunque los feminicidios son también homicidios éstos están en una categoriá separada debido al motivo por el que ocurren.
+Vemos también que hay una extraña coincidencia de valores entre Abuso de Confianza, Daño a la Propiedad, Despojo, Extorsión y Fraude,
+lo que sugiere un sesgo al momento de reportar estos delitos por parte de la autoridad (por ejemplo, cifras redondeadas, reportes nulos, etc.)
+
+### Incidencia Delictiva por Estado
+
+```{python}
+#| label: crime-by-state
+#| fig-cap: "Incidencia Delictiva Total por Estado (2015-2025)"
+from matplotlib.ticker import StrMethodFormatter
+
+entidad_counts = (
+    dataframe.groupby("entidad")["incidencia_delictiva"]
+    .sum()
+    .sort_values(ascending=False)
+    .head(10)
+)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bars = ax.bar(entidad_counts.index, entidad_counts.values, color="coral")
+# Formato del eje Y con separadores de miles y sin decimales
+ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
+# Agregamos los valores reales arriba de cada barra con separadores de miles
+ax.bar_label(bars, fmt="{:,.0f}", padding=3, fontsize=10, fontweight="bold")
+
+ax.set_title(
+    "Incidencia Delictiva Total por Entidad (Top 10) - 2015 a 2025",
+    fontsize=15,
+    fontweight="bold",
+    pad=15,
+)
+ax.set_ylabel("Total de Delitos", fontsize=12)
+ax.set_xlabel("Entidad Federativa", fontsize=12)
+ax.tick_params(axis="x", rotation=40)
+
+plt.tight_layout()
+plt.show()
+```
+
+Nuestra sospecha anterior que la EdoMex y la CDMX son los estados con más reportes es correcta. Vemos que le siguen Jalisco,
+Guanajuato y Baja California y que, a pesar de la moda, Aguascalientes no figura dentro de los estados con más delitos reportados.
+
+```{python}
+#| label: crime-heatmap
+# | fig-cap: "Mapa de Calor de Incidencia Delictiva por Entidad y Tipo de Delito (Top 10 Delitos y Top 15 Entidades)"
+top_crimes = dataframe["tipo_delito"].value_counts().head(10).index
+top_entities = dataframe["entidad"].value_counts().head(10).index
+
+filtered_df = dataframe[dataframe["tipo_delito"].isin(top_crimes) & dataframe["entidad"].isin(top_entities)]
+
+pivot = filtered_df.pivot_table(
+    values="incidencia_delictiva", index="entidad", columns="tipo_delito", aggfunc="sum"
+)
+
+fig, ax = plt.subplots(figsize=(10, 10))
+sns.heatmap(
+    pivot,
+    cmap="RdYlGn_r",
+    annot=True,
+    fmt=",.0f",  # Agregamos la coma para que los números dentro del mapa tengan comas (ej. 1,234,567)
+    cbar_kws={"label": "Incidencia"},
+    ax=ax,
+)
+
+cbar = ax.collections[0].colorbar
+# aplicamos formato con comas de miles y sin decimales
+cbar.ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.0f}'))
+
+ax.set_title(
+    "Incidencia por Entidad y Tipo de Delito",
+    fontsize=12,
+    fontweight="bold",
+    pad=15
+)
+
+plt.tight_layout()
+plt.show()
+```

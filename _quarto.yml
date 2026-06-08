@@ -21,6 +21,11 @@ book:
   date: "2026-06-10"
   chapters:
     - index.qmd
+    - chapters/eda.qmd
+    - chapters/models.qmd
+    - chapters/clustering.qmd
+    - chapters/conclusiones.qmd
+  #cover-image: "images/cover.png"
   favicon: "images/favicon.png"
   search: true
   repo-url: https://github.com/wallsified/proyecto-final-aymdd"
@@ -71,8 +76,8 @@ format:
         icon: "file-earmark-pdf-fill"
     grid:
       # verificar tamaños para ajustar en la mayoria de pantallas
-        sidebar-width: 350px
-        body-width: 1800px
+        sidebar-width: 500px
         #margin-width: 0px
-        gutter-width: 50px
+        #gutter-width: 50px
     page-navigation: false
+    page-layout: full
