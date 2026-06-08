@@ -1,20 +1,20 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Incidencia Delictiva Estatal",
+    "section": "",
+    "text": "No es noticia nueva de que M\u00e9xico sufre de un serio problema de delicuencia. Y esto, desgraciadamente, no ha disminuido considerablemente en 10 a\u00f1os a la fecha. Pero la realidad es que distntos estados de la rep\u00fablica sufren de delitos en particular que, aunque presentes en otros lugares, no son el principal foco del lugar.\nNuestro objetivo al analizar la incidencia delectiva es poder identificar no solo cuales son \u00e9stos delitos los m\u00e1s preliminares en cada estado, si no tambi\u00e9n poder crear un modelo que establezca cual es delito m\u00e1s probable que pueda sufrir un ciudadano de un estado en particular.\nDesgraciadamente, todxs somos propensos a sufrirlos, pero identificarlos no solo nos permite a nostros como habitantes poder prepararnos para evitarlos lo m\u00e1s que se pueda, como le puede servir a las autoridades componentes para concientizar y, ut\u00f3picamente, idear soluciones que reduzcan verdaderamente la epidemia de delicuencia que sufre el pa\u00eds.\nEste dataset pertenece a la Plataforma Nacional de Datos Abiertos Mexicana y fue creado por el Secretariado Ejecutivo del Sistema Nacional de Seguridad P\u00fablica (SESNSP). Este dataset, nombrado simplemente como \u201cIncidencia Delictiva\u201d, puede descargarse siguiendo este enlace.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>\u00a0 <span class='chapter-title'>Introducci\u00f3n</span>"
+    ]
+  },
+  {
     "objectID": "chapters/eda.html",
     "href": "chapters/eda.html",
     "title": "An\u00e1lisis Exploratorio de Datos",
     "section": "",
     "text": "Diccionario de Datos\nHaremos un EDA para conocer el dataset en profundir y poder identificar patrones, tendencias y relaciones entre las variables. Esto nos permitir\u00e1 tomar decisiones informadas sobre c\u00f3mo abordar el problema de la incidencia delictiva m\u00e1s adelante en el proyecto, principalmente para crear el modelo de predicci\u00f3n adecuado a este problema.\nPara esto, haremos limpieza, an\u00e1lisis estad\u00edstico, detecci\u00f3n de outliers y visualizaci\u00f3n de los datos.\nMostrar c\u00f3digo\nimport sys\nfrom pathlib import Path\n\n# Resuelve el problema de las ubicaciones de los scripts\nsys.path.insert(0, str(Path.cwd().parent))\n\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\nfrom src import config\nfrom src.data import DataRepository\nfrom src.preprocessing import PreprocessingPipeline\nfrom src.eda import StatisticsAnalyzer, OutlierDetector\n\n# Tema visual por defecto del proyecto.\nsns.set_theme(style=config.SEABORN_THEME, palette=config.PLOT_PALETTE)\npd.set_option(\"display.max_columns\", 20)\npd.set_option(\"display.width\", 140)\npd.set_option(\"display.max_colwidth\", 200)\n\nrepo = DataRepository()\ndataframe = repo.load()\nrepo.dictionary()\n\n\n\n\n\n\n\n\n\ncolumna\ntipo\ndescripcion\n\n\n\n\n0\nanio\nint64\nA\u00f1o de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.\n\n\n1\nclave_ent\nint64\nClave de la entidad, seg\u00fan el Marco Geoestad\u00edstico Nacional (MGN) del Instituto Nacional de Geograf\u00eda y Estad\u00edstica (INEGI).\n\n\n2\nentidad\nstr\nEntidad federativa de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.\n\n\n3\nbien_juridico_afectado\nstr\nPrimera clasificaci\u00f3n de los delitos en las averiguaciones previas y/o carpetas de investigaci\u00f3n. (Patrimonio, vida, libertad, etc.)\n\n\n4\ntipo_delito\nstr\nSegunda clasificaci\u00f3n de los delitos. (Falsedad, Lesiones, Robo, etc.)\n\n\n5\nsubtipo_delito\nstr\nTercera clasificaci\u00f3n de los delitos. Subcategor\u00edas espec\u00edficas de cada tipo de delito. (Lesiones dolosas, etc. Puede ser repetido con la anterior)\n\n\n6\nmodalidad\nstr\nCuarta clasificaci\u00f3n de los delitos. Forma en la que se comete el delito. (Con violencia, sin violencia, etc.)\n\n\n7\nmes\nstr\nMes de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.\n\n\n8\nfecha\nstr\nFecha de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.\n\n\n9\nincidencia_delictiva\nint64\nIncidencia delictiva del Fuero Com\u00fan (N\u00famero absoluto de presuntos delitos registrados)\n\n\n10\nentidad_federativa\nstr\nEntidad federativa de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>\u00a0 <span class='chapter-title'>An\u00e1lisis Exploratorio de Datos</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/eda.html#diccionario-de-datos",
-    "href": "chapters/eda.html#diccionario-de-datos",
-    "title": "An\u00e1lisis Exploratorio de Datos",
-    "section": "Diccionario de Datos",
-    "text": "Diccionario de Datos\n\n\nMostrar c\u00f3digo\nimport sys\nfrom pathlib import Path\n\n# Resuelve el problema de las ubicaciones de los scripts\nsys.path.insert(0, str(Path.cwd().parent))\n\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\nfrom src import config\nfrom src.data import DataRepository\nfrom src.preprocessing import PreprocessingPipeline\nfrom src.eda import StatisticsAnalyzer, OutlierDetector\n\n# Tema visual por defecto del proyecto.\nsns.set_theme(style=config.SEABORN_THEME, palette=config.PLOT_PALETTE)\npd.set_option(\"display.max_columns\", 20)\npd.set_option(\"display.width\", 140)\npd.set_option(\"display.max_colwidth\", 200)\n\nrepo = DataRepository()\ndataframe = repo.load()\nrepo.dictionary()\n\n\n\n\n\n\n\n\n\ncolumna\ntipo\ndescripcion\n\n\n\n\n0\nanio\nint64\nA\u00f1o de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.\n\n\n1\nclave_ent\nint64\nClave de la entidad, seg\u00fan el Marco Geoestad\u00edstico Nacional (MGN) del Instituto Nacional de Geograf\u00eda y Estad\u00edstica (INEGI).\n\n\n2\nentidad\nstr\nEntidad federativa de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.\n\n\n3\nbien_juridico_afectado\nstr\nPrimera clasificaci\u00f3n de los delitos en las averiguaciones previas y/o carpetas de investigaci\u00f3n. (Patrimonio, vida, libertad, etc.)\n\n\n4\ntipo_delito\nstr\nSegunda clasificaci\u00f3n de los delitos. (Falsedad, Lesiones, Robo, etc.)\n\n\n5\nsubtipo_delito\nstr\nTercera clasificaci\u00f3n de los delitos. Subcategor\u00edas espec\u00edficas de cada tipo de delito. (Lesiones dolosas, etc. Puede ser repetido con la anterior)\n\n\n6\nmodalidad\nstr\nCuarta clasificaci\u00f3n de los delitos. Forma en la que se comete el delito. (Con violencia, sin violencia, etc.)\n\n\n7\nmes\nstr\nMes de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.\n\n\n8\nfecha\nstr\nFecha de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.\n\n\n9\nincidencia_delictiva\nint64\nIncidencia delictiva del Fuero Com\u00fan (N\u00famero absoluto de presuntos delitos registrados)\n\n\n10\nentidad_federativa\nstr\nEntidad federativa de registro de las averiguaciones previas y/o carpetas de investigaci\u00f3n.",
     "crumbs": [
       "<span class='chapter-number'>2</span>\u00a0 <span class='chapter-title'>An\u00e1lisis Exploratorio de Datos</span>"
     ]
@@ -60,16 +60,6 @@
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Incidencia Delictiva Estatal",
-    "section": "",
-    "text": "No es noticia nueva de que M\u00e9xico sufre de un serio problema de delicuencia. Y esto, desgraciadamente, no ha disminuido considerablemente en 10 a\u00f1os a la fecha. Pero la realidad es que distntos estados de la rep\u00fablica sufren de delitos en particular que, aunque presentes en otros lugares, no son el principal foco del lugar.\nNuestro objetivo al analizar la incidencia delectiva es poder identificar no solo cuales son \u00e9stos delitos los m\u00e1s preliminares en cada estado, si no tambi\u00e9n poder crear un modelo que establezca cual es delito m\u00e1s probable que pueda sufrir un ciudadano de un estado en particular.\nDesgraciadamente, todxs somos propensos a sufrirlos, pero identificarlos no solo nos permite a nostros como habitantes poder prepararnos para evitarlos lo m\u00e1s que se pueda, como le puede servir a las autoridades componentes para concientizar y, ut\u00f3picamente, idear soluciones que reduzcan verdaderamente la epidemia de delicuencia que sufre el pa\u00eds.\nEste dataset pertenece a la Plataforma Nacional de Datos Abiertos Mexicana y fue creado por el Secretariado Ejecutivo del Sistema Nacional de Seguridad P\u00fablica (SESNSP). Este dataset, nombrado simplemente como \u201cIncidencia Delictiva\u201d, puede descargarse siguiendo este enlace.",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>\u00a0 <span class='chapter-title'>Introducci\u00f3n</span>"
-    ]
-  },
-  {
     "objectID": "chapters/clustering.html",
     "href": "chapters/clustering.html",
     "title": "Clustering y An\u00e1lisis de Componentes Principales",
@@ -100,36 +90,6 @@
     ]
   },
   {
-    "objectID": "chapters/clustering.html#cl\u00faster-1-perfil-diversificado",
-    "href": "chapters/clustering.html#cl\u00faster-1-perfil-diversificado",
-    "title": "Clustering y An\u00e1lisis de Componentes Principales",
-    "section": "Cl\u00faster 1 (Perfil Diversificado)",
-    "text": "Cl\u00faster 1 (Perfil Diversificado)\nEste grupo, conformado por Yucat\u00e1n, Coahuila, Guanajuato y Tabasco, es el m\u00e1s claramente distinguible dentro de la proyecci\u00f3n PCA, desplaz\u00e1ndose hacia la regi\u00f3n superior del plano. Esta separaci\u00f3n visual resulta consistente con el an\u00e1lisis de los perfiles promedio, ya que corresponde al cl\u00faster con la mayor participaci\u00f3n de la categor\u00eda Otros bienes jur\u00eddicos afectados, caracter\u00edstica que lo diferencia del resto de las entidades federativas.",
-    "crumbs": [
-      "<span class='chapter-number'>3</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/clustering.html#cl\u00fasters-0-y-2-perfiles-de-violencia-y-entorno-familiar",
-    "href": "chapters/clustering.html#cl\u00fasters-0-y-2-perfiles-de-violencia-y-entorno-familiar",
-    "title": "Clustering y An\u00e1lisis de Componentes Principales",
-    "section": "Cl\u00fasters 0 y 2 (Perfiles de Violencia y Entorno Familiar)",
-    "text": "Cl\u00fasters 0 y 2 (Perfiles de Violencia y Entorno Familiar)\nAmbos grupos ocupan principalmente la regi\u00f3n central de la proyecci\u00f3n y presentan algunos estados relativamente pr\u00f3ximos entre s\u00ed. Esta situaci\u00f3n sugiere que comparten ciertas caracter\u00edsticas en las dos primeras componentes principales. No obstante, dicha cercan\u00eda la debemos interpretar con cuidado ya que la agrupaci\u00f3n definitiva fue realizada en el espacio original de siete dimensiones, donde existen diferencias suficientes para que K-Means los clasifique en perfiles distintos.",
-    "crumbs": [
-      "<span class='chapter-number'>3</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/clustering.html#cl\u00faster-3-perfil-patrimonial",
-    "href": "chapters/clustering.html#cl\u00faster-3-perfil-patrimonial",
-    "title": "Clustering y An\u00e1lisis de Componentes Principales",
-    "section": "Cl\u00faster 3 (Perfil Patrimonial)",
-    "text": "Cl\u00faster 3 (Perfil Patrimonial)\nEste grupo exhibe un n\u00facleo relativamente compacto en la regi\u00f3n derecha del plano, donde se concentran entidades como Ciudad de M\u00e9xico, Aguascalientes, Quer\u00e9taro y Jalisco. La cohesi\u00f3n observada resulta consistente con su perfil predominantemente patrimonial, caracterizado por una elevada participaci\u00f3n de delitos contra el patrimonio. Adicionalmente, destaca el caso de Tlaxcala, que aparece visualmente separado del n\u00facleo principal del grupo. Aunque comparte la misma clasificaci\u00f3n patrimonial, su ubicaci\u00f3n sugiere una combinaci\u00f3n de proporciones delictivas distinta a la observada en el resto de las entidades del cl\u00faster.\nPodemos notar que algunos puntos pertenecientes a distintos grupos aparecen pr\u00f3ximos entre s\u00ed dentro de la proyecci\u00f3n bidimensional. Este comportamiento es esperado, ya que la representaci\u00f3n mediante PCA conserva \u00fanicamente el 55.32% de la varianza total de los datos, dejando fuera aproximadamente el 44.68% de la informaci\u00f3n contenida en las dimensiones restantes.",
-    "crumbs": [
-      "<span class='chapter-number'>3</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
-    ]
-  },
-  {
     "objectID": "chapters/clustering.html#perfil-diversificado",
     "href": "chapters/clustering.html#perfil-diversificado",
     "title": "Clustering y An\u00e1lisis de Componentes Principales",
@@ -137,16 +97,6 @@
     "text": "#1 - Perfil Diversificado\nEste grupo, conformado por Yucat\u00e1n, Coahuila, Guanajuato y Tabasco, es el m\u00e1s claramente distinguible dentro de la proyecci\u00f3n PCA, desplaz\u00e1ndose hacia la regi\u00f3n superior del plano. Esta separaci\u00f3n visual resulta consistente con el an\u00e1lisis de los perfiles promedio, ya que corresponde al cl\u00faster con la mayor participaci\u00f3n de la categor\u00eda Otros bienes jur\u00eddicos afectados, caracter\u00edstica que lo diferencia del resto de las entidades federativas.",
     "crumbs": [
       "<span class='chapter-number'>4</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/clustering.html#y-2-perfiles-de-violencia-y-entorno-familiar",
-    "href": "chapters/clustering.html#y-2-perfiles-de-violencia-y-entorno-familiar",
-    "title": "Clustering y An\u00e1lisis de Componentes Principales",
-    "section": "#0 y 2 (Perfiles de Violencia y Entorno Familiar)",
-    "text": "#0 y 2 (Perfiles de Violencia y Entorno Familiar)\nAmbos grupos ocupan principalmente la regi\u00f3n central de la proyecci\u00f3n y presentan algunos estados relativamente pr\u00f3ximos entre s\u00ed. Esta situaci\u00f3n sugiere que comparten ciertas caracter\u00edsticas en las dos primeras componentes principales. No obstante, dicha cercan\u00eda la debemos interpretar con cuidado ya que la agrupaci\u00f3n definitiva fue realizada en el espacio original de siete dimensiones, donde existen diferencias suficientes para que K-Means los clasifique en perfiles distintos.",
-    "crumbs": [
-      "<span class='chapter-number'>3</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
     ]
   },
   {

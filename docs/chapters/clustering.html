@@ -352,7 +352,7 @@ window.Quarto = {
 <span id="cb3-2"><a href="#cb3-2"></a>metrics <span class="op">=</span> clustering_pipe.evaluate_k_options(max_k<span class="op">=</span><span class="dv">8</span>)</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="co"># Configurar el lienzo para mostrar ambas gráficas una al lado de la otra</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>), dpi<span class="op">=</span>config.PLOT_DPI) </span>
+<span id="cb3-5"><a href="#cb3-5"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>), dpi<span class="op">=</span>config.PLOT_DPI)</span>
 <span id="cb3-6"><a href="#cb3-6"></a></span>
 <span id="cb3-7"><a href="#cb3-7"></a><span class="co"># Gráfica izquierda: Método del Codo (Inercia)</span></span>
 <span id="cb3-8"><a href="#cb3-8"></a>sns.lineplot(x<span class="op">=</span>metrics[<span class="st">"k"</span>], y<span class="op">=</span>metrics[<span class="st">"inertia"</span>], marker<span class="op">=</span><span class="st">"o"</span>, ax<span class="op">=</span>axes[<span class="dv">0</span>], color<span class="op">=</span><span class="st">"royalblue"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
@@ -398,15 +398,15 @@ window.Quarto = {
 <span id="cb4-4"><a href="#cb4-4"></a>df_clusters <span class="op">=</span> clustering_pipe.fit_final_model(n_clusters<span class="op">=</span>N_CLUSTERS_OPTIMO)</span>
 <span id="cb4-5"><a href="#cb4-5"></a></span>
 <span id="cb4-6"><a href="#cb4-6"></a><span class="co"># Construir la visualización del Scatter Plot</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>), dpi<span class="op">=</span>config.PLOT_DPI)</span>
+<span id="cb4-7"><a href="#cb4-7"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>), dpi<span class="op">=</span>config.PLOT_DPI)</span>
 <span id="cb4-8"><a href="#cb4-8"></a></span>
 <span id="cb4-9"><a href="#cb4-9"></a>sns.scatterplot(</span>
-<span id="cb4-10"><a href="#cb4-10"></a>    data<span class="op">=</span>df_clusters, </span>
-<span id="cb4-11"><a href="#cb4-11"></a>    x<span class="op">=</span><span class="st">"pca_1"</span>, </span>
-<span id="cb4-12"><a href="#cb4-12"></a>    y<span class="op">=</span><span class="st">"pca_2"</span>, </span>
-<span id="cb4-13"><a href="#cb4-13"></a>    hue<span class="op">=</span><span class="st">"cluster"</span>, </span>
-<span id="cb4-14"><a href="#cb4-14"></a>    palette<span class="op">=</span><span class="st">"tab10"</span>, </span>
-<span id="cb4-15"><a href="#cb4-15"></a>    s<span class="op">=</span><span class="dv">160</span>, </span>
+<span id="cb4-10"><a href="#cb4-10"></a>    data<span class="op">=</span>df_clusters,</span>
+<span id="cb4-11"><a href="#cb4-11"></a>    x<span class="op">=</span><span class="st">"pca_1"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12"></a>    y<span class="op">=</span><span class="st">"pca_2"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13"></a>    hue<span class="op">=</span><span class="st">"cluster"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14"></a>    palette<span class="op">=</span><span class="st">"tab10"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15"></a>    s<span class="op">=</span><span class="dv">160</span>,</span>
 <span id="cb4-16"><a href="#cb4-16"></a>    style<span class="op">=</span><span class="st">"cluster"</span>,</span>
 <span id="cb4-17"><a href="#cb4-17"></a>    alpha<span class="op">=</span><span class="fl">0.9</span></span>
 <span id="cb4-18"><a href="#cb4-18"></a>)</span>
@@ -414,9 +414,9 @@ window.Quarto = {
 <span id="cb4-20"><a href="#cb4-20"></a><span class="co"># Etiquetar cada punto con el nombre de su respectivo estado</span></span>
 <span id="cb4-21"><a href="#cb4-21"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(df_clusters)):</span>
 <span id="cb4-22"><a href="#cb4-22"></a>    plt.text(</span>
-<span id="cb4-23"><a href="#cb4-23"></a>        x<span class="op">=</span>df_clusters[<span class="st">"pca_1"</span>][i] <span class="op">+</span> <span class="fl">0.04</span>, </span>
-<span id="cb4-24"><a href="#cb4-24"></a>        y<span class="op">=</span>df_clusters[<span class="st">"pca_2"</span>][i] <span class="op">+</span> <span class="fl">0.04</span>, </span>
-<span id="cb4-25"><a href="#cb4-25"></a>        s<span class="op">=</span>df_clusters[<span class="st">"entidad"</span>][i], </span>
+<span id="cb4-23"><a href="#cb4-23"></a>        x<span class="op">=</span>df_clusters[<span class="st">"pca_1"</span>][i] <span class="op">+</span> <span class="fl">0.04</span>,</span>
+<span id="cb4-24"><a href="#cb4-24"></a>        y<span class="op">=</span>df_clusters[<span class="st">"pca_2"</span>][i] <span class="op">+</span> <span class="fl">0.04</span>,</span>
+<span id="cb4-25"><a href="#cb4-25"></a>        s<span class="op">=</span>df_clusters[<span class="st">"entidad"</span>][i],</span>
 <span id="cb4-26"><a href="#cb4-26"></a>        fontsize<span class="op">=</span><span class="dv">8</span>,</span>
 <span id="cb4-27"><a href="#cb4-27"></a>        alpha<span class="op">=</span><span class="fl">0.8</span></span>
 <span id="cb4-28"><a href="#cb4-28"></a>    )</span>
@@ -435,7 +435,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display">
 <div id="clustering-final-visualization" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="clustering_files/figure-html/clustering-final-visualization-output-1.png" width="935" height="697" class="figure-img"></p>
+<p><img src="clustering_files/figure-html/clustering-final-visualization-output-1.png" width="935" height="457" class="figure-img"></p>
 <figcaption>Visualización de la Segmentación de Entidades Federativas en 4 Perfiles Criminales (Proyección PCA 2D)</figcaption>
 </figure>
 </div>
@@ -460,7 +460,7 @@ window.Quarto = {
 <span id="cb5-10"><a href="#cb5-10"></a>resumen_porcentual <span class="op">=</span> (resumen_clusters <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>).T</span>
 <span id="cb5-11"><a href="#cb5-11"></a>resumen_porcentual</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="clustering-matrix-proportions" class="cell-output cell-output-display" data-execution_count="44">
+<div id="clustering-matrix-proportions" class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
