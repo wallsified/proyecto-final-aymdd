@@ -247,3 +247,6 @@ __marimo__/
 # Jupyter cache
 .ipynb_checkpoints/
 .jupyter_cache/
+
+# uv stuff
+uv.lock
