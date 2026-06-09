@@ -42,7 +42,7 @@ representación más interpretable del fenómeno delictivo.
 
 - **Normalización por Fila (Proporciones)**: Para cada entidad federativa se calculó la proporción que representa
 cada bien jurídico respecto al total de delitos registrados en dicha entidad. Se usó la siguiente fórmula:
-$pi = \frac{Delitos_i}{\sum_j Delitos_j}$
+$$pi = \frac{Delitos_i}{\sum_j Delitos_j}$$
 
 De esta manera, cada estado quedó representado por un vector de siete proporciones cuya suma es igual a uno,
 permitiendo comparar la estructura relativa de la incidencia delictiva independientemente de su magnitud absoluta.
@@ -143,15 +143,85 @@ Con base en ambos criterios seleccionamos $K=4$ como la configuración final del
 un equilibrio adecuado entre calidad estadística e interpretabilidad, permitiendo identificar perfiles delictivos
 diferenciados sin fragmentar excesivamente el conjunto de 32 entidades federativas analizadas.
 
-# Entrenamiento del Modelo y Segmentación de Entidades
+
+# Resultados de la Matriz de Proporciones y Perfil de Clusters
+
+Una vez entrenado el modelo con $K=4$, se obtuvo la matriz de proporciones promedio para cada cluster, lo que permitió
+caracterizar los perfiles delictivos predominantes en cada grupo de entidades federativas.
 
 ```{python}
-#| label: clustering-final-visualization
-#| fig-cap: "Visualización de la Segmentación de Entidades Federativas en 4 Perfiles Criminales (Proyección PCA 2D)"
+#|label: clustering-matrix-proportions
 N_CLUSTERS_OPTIMO = 4
 
 # Entrenar el modelo final en 7D y recuperar coordenadas PCA para graficar
 df_clusters = clustering_pipe.fit_final_model(n_clusters=N_CLUSTERS_OPTIMO)
+
+matrix_pct = clustering_pipe.prepare_matrix(dataframe)
+
+# Pegamos la columna del cluster que calculó el modelo
+matrix_pct['cluster'] = df_clusters.set_index('entidad')['cluster']
+
+# Calculamos el promedio de cada delito para cada uno de los 4 grupos
+resumen_clusters = matrix_pct.groupby('cluster').mean()
+
+# Multiplicamos por 100 para visualizarlo como porcentaje limpio y transponemos para leerlo mejor
+resumen_porcentual = (resumen_clusters * 100).round(2).T
+resumen_porcentual
+```
+
+# Interpretacion de los Clusters
+
+## #0 – Perfil de Violencia contra las Personas
+
+Este grupo se caracteriza por presentar la mayor participación relativa de delitos relacionados con **la vida y la
+integridad corporal (18.74%)**, así como el valor más elevado en **libertad y seguridad sexual (3.86%)**. En comparación
+con los demás grupos, la incidencia asociada a conductas violentas tiene un peso relativo mayor dentro de la composición
+delictiva total. Entre las entidades pertenecientes a este grupo se encuentran Campeche, Chiapas, Guerrero, Michoacán,
+Estado de México y Oaxaca.
+
+## #1 – Perfil Diversificado de Otros Bienes Jurídicos
+
+La característica más distintiva de este grupo es la elevada participación de la categoría **Otros bienes jurídicos
+afectados (33.29%)**, valor considerablemente superior al observado en los demás clústeres. Esto indica una distribución
+delictiva menos concentrada en categorías tradicionales como patrimonio o familia y una mayor presencia relativa de
+delitos clasificados en rubros complementarios del conjunto de datos. Este perfil está conformado por Coahuila,
+Guanajuato, Tabasco y Yucatán.
+
+## #2 – Perfil Familiar y de Libertad Personal
+
+Este clúster presenta la mayor proporción de delitos contra **la familia (19.93%)** y contra **la libertad personal
+(1.93%)**, superando al resto de  los grupos en ambas categorías. El resultado sugiere una mayor concentración relativa
+de problemáticas asociadas al entorno familiar y a conductas que afectan la libertad individual. Las entidades agrupadas
+bajo este perfil son Chihuahua, Durango, Hidalgo, Nayarit, Nuevo León, Quintana Roo, San Luis Potosí, Sinaloa, Sonora,
+Tamaulipas, Veracruz y Zacatecas.
+
+## #3 – Perfil Patrimonial
+
+Este grupo concentra la mayor participación de delitos contra **el patrimonio (55.04%)**, representando más de la mitad
+de la incidencia promedio del clúster. La composición observada refleja una predominancia de delitos patrimoniales,
+como robos, fraudes y conductas relacionadas con afectaciones económicas. Entre las entidades pertenecientes a este
+perfil se encuentran Aguascalientes, Baja California, Baja California Sur, Ciudad de México, Colima, Jalisco, Morelos,
+Puebla, Querétaro y Tlaxcala.
+
+## Tabla de Segmentación
+
+| Clúster | Perfil Identificado | Entidades Federativas Coincidentes |
+| :---: | :--- | :--- |
+| **0** | Perfil de Violencia contra las Personas | Campeche, Chiapas, Guerrero, Michoacán, México, Oaxaca |
+| **1** | Perfil Diversificado / Otros Bienes Jurídicos | Coahuila, Guanajuato, Tabasco, Yucatán |
+| **2** | Perfil Familiar y Libertad Personal | Chihuahua, Durango, Hidalgo, Nayarit, Nuevo León, Quintana Roo, San Luis Potosí, Sinaloa, Sonora, Tamaulipas, Veracruz, Zacatecas |
+| **3** | Perfil Patrimonial | Aguascalientes, Baja California, Baja California Sur, CDMX, Colima, Jalisco, Morelos, Puebla, Querétaro, Tlaxcala |
+
+
+# Proyección PCA
+
+A nivel general, la proyección bidimensional permite apreciar que los cuatro grupos identificados por K-Means muestran
+patrones diferenciados dentro del espacio de características, proporcionando una representación visual coherente con la
+estructura de agrupamiento obtenida por el modelo.
+
+```{python}
+#| label: clustering-final-visualization
+#| fig-cap: "Visualización de la Segmentación de Entidades Federativas en 4 Perfiles Criminales (Proyección PCA 2D)"
 
 # Construir la visualización del Scatter Plot
 plt.figure(figsize=(8, 4), dpi=config.PLOT_DPI)
@@ -189,75 +259,55 @@ plt.tight_layout()
 plt.show()
 ```
 
-# Resultados de la Matriz de Proporciones y Perfil de Clusters
+Para comprender la geometría de las entidades federativas en la proyección PCA, analizamos la matriz de cargas (loadings),
+la cual indica la contribución y correlación lineal de cada Bien Jurídico Afectado con las dos primeras componentes
+principales (ejes del plano).
 
-Una vez entrenado el modelo con $K=4$, se obtuvo la matriz de proporciones promedio para cada cluster, lo que permitió
-caracterizar los perfiles delictivos predominantes en cada grupo de entidades federativas.
+Bien Jurídico Afectado | Componente Principal 1 (PC1) | Componente Principal 2 (PC2) |
+|---|---:|---:|
+| El patrimonio | 0.567 | -0.332 |
+| La familia | -0.564 | 0.030 |
+| La libertad y la seguridad sexual | -0.459 | -0.137 |
+| La sociedad | -0.047 | 0.322 |
+| La vida y la integridad corporal | -0.095 | -0.325 |
+| Libertad personal | -0.368 | -0.450 |
+| Otros bienes jurídicos afectados | -0.058 | 0.677
 
 ```{python}
-#|label: clustering-matrix-proportions
-matrix_pct = clustering_pipe.prepare_matrix(dataframe)
+#| label: clustering-pca-loadings
+# Extraer la matriz de loadings (componentes_ x variables)
+loadings = clustering_pipe.pca.components_
 
-# Pegamos la columna del cluster que calculó el modelo
-matrix_pct['cluster'] = df_clusters.set_index('entidad')['cluster']
+# Construir un DataFrame elegante para analizar la composición
+df_loadings = pd.DataFrame(
+    loadings.T,  # Transponemos para que las variables queden en las filas
+    columns=["Componente Principal 1 (PC1)", "Componente Principal 2 (PC2)"],
+    index=clustering_pipe.features_names
+)
 
-# Calculamos el promedio de cada delito para cada uno de los 4 grupos
-resumen_clusters = matrix_pct.groupby('cluster').mean()
-
-# Multiplicamos por 100 para visualizarlo como porcentaje limpio y transponemos para leerlo mejor
-resumen_porcentual = (resumen_clusters * 100).round(2).T
-resumen_porcentual
+df_loadings.round(3)
 ```
 
-# Interpretacion de los Clusters
+Los coeficientes muestran que la Componente Principal 1 (PC1) está dominada por un contraste entre _El patrimonio_
+(carga positiva alta) y variables asociadas al entorno familiar y social, como _La familia_ y _La libertad y la seguridad
+sexual (cargas negativas). En consecuencia, las entidades ubicadas hacia la derecha del plano tienden a presentar una
+mayor proporción relativa de delitos patrimoniales, mientras que las ubicadas hacia la izquierda muestran una mayor
+participación relativa de las categorías familiares y sociales.
 
-### #0 – Perfil de Violencia contra las Personas
+Por su parte, la Componente Principal 2 (PC2) está fuertemente influenciada por _Otros bienes jurídicos afectados_ (0.677).
+Esto explica por qué las entidades del Cluster 1 como Yucatán, Coahuila, Guanajuato y Tabasco, aparecen desplazadas hacia
+la parte superior de la gráfica, pues comparten una participación relativamente elevada de esa categoría respecto al resto
+del país.
 
-Este grupo se caracteriza por presentar la mayor participación relativa de delitos relacionados con **la vida y la
-integridad corporal (18.74%)**, así como el valor más elevado en **libertad y seguridad sexual (3.86%)**. En comparación
-con los demás grupos, la incidencia asociada a conductas violentas tiene un peso relativo mayor dentro de la composición
-delictiva total. Entre las entidades pertenecientes a este grupo se encuentran Campeche, Chiapas, Guerrero, Michoacán,
-Estado de México y Oaxaca.
+La matriz de cargas también ayuda a interpretar el caso de Tlaxcala, que aparece aislado en la parte inferior derecha.
+Su ubicación sugiere una combinación de proporciones delictivas distinta a la observada en la mayoría de las entidades de
+su mismo clúster, aun cuando mantiene una fuerte orientación patrimonial.
 
-### #1 – Perfil Diversificado de Otros Bienes Jurídicos
+La proximidad o aparente solapamiento de algunos puntos pertenecientes a distintos grupos dentro de la proyección bidimensional
+es un comportamiento esperado ya que la representación mediante PCA conserva únicamente el 55.32% de la varianza total de los
+datos, dejando fuera aproximadamente el 44.68% de la información contenida en las dimensiones restantes.
 
-La característica más distintiva de este grupo es la elevada participación de la categoría **Otros bienes jurídicos
-afectados (33.29%)**, valor considerablemente superior al observado en los demás clústeres. Esto indica una distribución
-delictiva menos concentrada en categorías tradicionales como patrimonio o familia y una mayor presencia relativa de
-delitos clasificados en rubros complementarios del conjunto de datos. Este perfil está conformado por Coahuila,
-Guanajuato, Tabasco y Yucatán.
-
-### #2 – Perfil Familiar y de Libertad Personal
-
-Este clúster presenta la mayor proporción de delitos contra **la familia (19.93%)** y contra **la libertad personal
-(1.93%)**, superando al resto de  los grupos en ambas categorías. El resultado sugiere una mayor concentración relativa
-de problemáticas asociadas al entorno familiar y a conductas que afectan la libertad individual. Las entidades agrupadas
-bajo este perfil son Chihuahua, Durango, Hidalgo, Nayarit, Nuevo León, Quintana Roo, San Luis Potosí, Sinaloa, Sonora,
-Tamaulipas, Veracruz y Zacatecas.
-
-### #3 – Perfil Patrimonial
-
-Este grupo concentra la mayor participación de delitos contra **el patrimonio (55.04%)**, representando más de la mitad
-de la incidencia promedio del clúster. La composición observada refleja una predominancia de delitos patrimoniales,
-como robos, fraudes y conductas relacionadas con afectaciones económicas. Entre las entidades pertenecientes a este
-perfil se encuentran Aguascalientes, Baja California, Baja California Sur, Ciudad de México, Colima, Jalisco, Morelos,
-Puebla, Querétaro y Tlaxcala.
-
-## Tabla de Segmentación
-
-| Clúster | Perfil Identificado | Entidades Federativas Coincidentes |
-| :---: | :--- | :--- |
-| **0** | Perfil de Violencia contra las Personas | Campeche, Chiapas, Guerrero, Michoacán, México, Oaxaca |
-| **1** | Perfil Diversificado / Otros Bienes Jurídicos | Coahuila, Guanajuato, Tabasco, Yucatán |
-| **2** | Perfil Familiar y Libertad Personal | Chihuahua, Durango, Hidalgo, Nayarit, Nuevo León, Quintana Roo, San Luis Potosí, Sinaloa, Sonora, Tamaulipas, Veracruz, Zacatecas |
-| **3** | Perfil Patrimonial | Aguascalientes, Baja California, Baja California Sur, CDMX, Colima, Jalisco, Morelos, Puebla, Querétaro, Tlaxcala |
-
-
-# Interpretación de la Proyección PCA
-
-A nivel general, la proyección bidimensional permite apreciar que los cuatro grupos identificados por K-Means muestran
-patrones diferenciados dentro del espacio de características, proporcionando una representación visual coherente con la
-estructura de agrupamiento obtenida por el modelo.
+# Perfiles bajo la Proyección PCA
 
 ## #1 - Perfil Diversificado
 

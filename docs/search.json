@@ -80,6 +80,46 @@
     ]
   },
   {
+    "objectID": "chapters/clustering.html#perfil-de-violencia-contra-las-personas",
+    "href": "chapters/clustering.html#perfil-de-violencia-contra-las-personas",
+    "title": "Clustering y An\u00e1lisis de Componentes Principales",
+    "section": "#0 \u2013 Perfil de Violencia contra las Personas",
+    "text": "#0 \u2013 Perfil de Violencia contra las Personas\nEste grupo se caracteriza por presentar la mayor participaci\u00f3n relativa de delitos relacionados con la vida y la integridad corporal (18.74%), as\u00ed como el valor m\u00e1s elevado en libertad y seguridad sexual (3.86%). En comparaci\u00f3n con los dem\u00e1s grupos, la incidencia asociada a conductas violentas tiene un peso relativo mayor dentro de la composici\u00f3n delictiva total. Entre las entidades pertenecientes a este grupo se encuentran Campeche, Chiapas, Guerrero, Michoac\u00e1n, Estado de M\u00e9xico y Oaxaca.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/clustering.html#perfil-diversificado-de-otros-bienes-jur\u00eddicos",
+    "href": "chapters/clustering.html#perfil-diversificado-de-otros-bienes-jur\u00eddicos",
+    "title": "Clustering y An\u00e1lisis de Componentes Principales",
+    "section": "#1 \u2013 Perfil Diversificado de Otros Bienes Jur\u00eddicos",
+    "text": "#1 \u2013 Perfil Diversificado de Otros Bienes Jur\u00eddicos\nLa caracter\u00edstica m\u00e1s distintiva de este grupo es la elevada participaci\u00f3n de la categor\u00eda Otros bienes jur\u00eddicos afectados (33.29%), valor considerablemente superior al observado en los dem\u00e1s cl\u00fasteres. Esto indica una distribuci\u00f3n delictiva menos concentrada en categor\u00edas tradicionales como patrimonio o familia y una mayor presencia relativa de delitos clasificados en rubros complementarios del conjunto de datos. Este perfil est\u00e1 conformado por Coahuila, Guanajuato, Tabasco y Yucat\u00e1n.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/clustering.html#perfil-familiar-y-de-libertad-personal",
+    "href": "chapters/clustering.html#perfil-familiar-y-de-libertad-personal",
+    "title": "Clustering y An\u00e1lisis de Componentes Principales",
+    "section": "#2 \u2013 Perfil Familiar y de Libertad Personal",
+    "text": "#2 \u2013 Perfil Familiar y de Libertad Personal\nEste cl\u00faster presenta la mayor proporci\u00f3n de delitos contra la familia (19.93%) y contra la libertad personal (1.93%), superando al resto de los grupos en ambas categor\u00edas. El resultado sugiere una mayor concentraci\u00f3n relativa de problem\u00e1ticas asociadas al entorno familiar y a conductas que afectan la libertad individual. Las entidades agrupadas bajo este perfil son Chihuahua, Durango, Hidalgo, Nayarit, Nuevo Le\u00f3n, Quintana Roo, San Luis Potos\u00ed, Sinaloa, Sonora, Tamaulipas, Veracruz y Zacatecas.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/clustering.html#perfil-patrimonial",
+    "href": "chapters/clustering.html#perfil-patrimonial",
+    "title": "Clustering y An\u00e1lisis de Componentes Principales",
+    "section": "#3 \u2013 Perfil Patrimonial",
+    "text": "#3 \u2013 Perfil Patrimonial\nEste grupo concentra la mayor participaci\u00f3n de delitos contra el patrimonio (55.04%), representando m\u00e1s de la mitad de la incidencia promedio del cl\u00faster. La composici\u00f3n observada refleja una predominancia de delitos patrimoniales, como robos, fraudes y conductas relacionadas con afectaciones econ\u00f3micas. Entre las entidades pertenecientes a este perfil se encuentran Aguascalientes, Baja California, Baja California Sur, Ciudad de M\u00e9xico, Colima, Jalisco, Morelos, Puebla, Quer\u00e9taro y Tlaxcala.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>\u00a0 <span class='chapter-title'>Clustering y An\u00e1lisis de Componentes Principales</span>"
+    ]
+  },
+  {
     "objectID": "chapters/clustering.html#tabla-de-segmentaci\u00f3n",
     "href": "chapters/clustering.html#tabla-de-segmentaci\u00f3n",
     "title": "Clustering y An\u00e1lisis de Componentes Principales",
