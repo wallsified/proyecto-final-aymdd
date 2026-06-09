@@ -11,7 +11,7 @@ def cargar_preparar_datos(ruta):
     Args:
         ruta : la ruta del archivo CSV a cargar
     '''
-    df = pd.read_csv('../src/data/INM_estatal_dic25_clean.csv')
+    df = pd.read_csv(ruta)
 
     return df
 

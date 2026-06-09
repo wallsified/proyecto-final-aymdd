@@ -3,7 +3,7 @@ from sklearn.model_selection import GridSearchCV
 
 from sklearn.ensemble import RandomForestRegressor
 
-def entrenar_random_forest(X_traim, y_train, preprocessor):
+def entrenar_random_forest(X_train, y_train, preprocessor):
 
     '''
     Configura y entrena un modelo Random Forest usando validación cruzada
@@ -24,10 +24,10 @@ def entrenar_random_forest(X_traim, y_train, preprocessor):
     ])
 
     param_grid = {
-        "model_n_estimators": [100, 200, 300],
-        "model_max_depth" : [10, 20, 30, None],
-        "model_min_samples_split" : [2, 5, 10],
-        "model_min_samples_leaf" : [1, 2, 4]
+        "model__n_estimators": [100, 200, 300],
+        "model__max_depth" : [10, 20, 30, None],
+        "model__min_samples_split" : [2, 5, 10],
+        "model__min_samples_leaf" : [1, 2, 4]
     }
 
     grid_search = GridSearchCV(
