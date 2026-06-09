@@ -1,4 +1,4 @@
-import jolib
+import joblib
 
 def guardar_modelo(modelo, nombre_archivo):
     '''
@@ -8,7 +8,7 @@ def guardar_modelo(modelo, nombre_archivo):
         modelo : el modelo entrenado
         nombre_archivo :  Ruta completa o nombre del archivo donde se guardará
     '''
-    jolib.dump(modelo, nombre_archivo)
+    joblib.dump(modelo, nombre_archivo)
     print(f"Modelo guardado en {nombre_archivo}")
 
 def cargar_modelo(nombre_archivo):
@@ -21,6 +21,6 @@ def cargar_modelo(nombre_archivo):
     Returns:
         modelo : el modelo listo para ser usado
     '''
-    modelo = jolib.load(nombre_archivo)
+    modelo = joblib.load(nombre_archivo)
     print(f"Modelo cargado desde: {nombre_archivo}")
     return modelo
