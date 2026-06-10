@@ -191,7 +191,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#delitos-más-comunes" id="toc-delitos-más-comunes" class="nav-link" data-scroll-target="#delitos-más-comunes">Delitos más Comunes</a></li>
   <li><a href="#incidencia-delictiva-por-estado" id="toc-incidencia-delictiva-por-estado" class="nav-link" data-scroll-target="#incidencia-delictiva-por-estado">Incidencia Delictiva por Estado</a></li>
+  <li><a href="#bienes-jurídicos-más-afectados" id="toc-bienes-jurídicos-más-afectados" class="nav-link" data-scroll-target="#bienes-jurídicos-más-afectados">Bienes Jurídicos más Afectados</a></li>
+  <li><a href="#modalidad-de-delitos" id="toc-modalidad-de-delitos" class="nav-link" data-scroll-target="#modalidad-de-delitos">Modalidad de Delitos</a></li>
+  <li><a href="#delincuencia-por-año" id="toc-delincuencia-por-año" class="nav-link" data-scroll-target="#delincuencia-por-año">Delincuencia por Año</a></li>
   </ul></li>
+  <li><a href="#detección-de-outliers" id="toc-detección-de-outliers" class="nav-link" data-scroll-target="#detección-de-outliers">Detección de Outliers</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd&quot;/edit/main/chapters/eda.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li></ul></div><div class="quarto-code-links"><h2>Enlaces de código</h2><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd"><i class="bi bi-github"></i>Repositorio del Proyecto</a></li><li><a href="example.com"><i class="bi bi-easel-fill"></i>Presentación</a></li><li><a href="example.com"><i class="bi bi-file-earmark-pdf-fill"></i>Descargar PDF</a></li></ul></div></nav>
 </nav>
@@ -253,7 +257,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-23"><a href="#cb1-23"></a>dataframe <span class="op">=</span> repo.load()</span>
 <span id="cb1-24"><a href="#cb1-24"></a>repo.dictionary()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="data-load-dictionary" class="cell-output cell-output-display" data-execution_count="90">
+<div id="data-load-dictionary" class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
 
@@ -347,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>dataframe</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="dataset-overview" class="cell-output cell-output-display" data-execution_count="91">
+<div id="dataset-overview" class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -584,7 +588,7 @@ CSV limpio guardado en:
 <span id="cb5-3"><a href="#cb5-3"></a>stats <span class="op">=</span> StatisticsAnalyzer(dataframe)</span>
 <span id="cb5-4"><a href="#cb5-4"></a>stats.numeric_stats()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="descriptive-statistics" class="cell-output cell-output-display" data-execution_count="93">
+<div id="descriptive-statistics" class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -678,7 +682,7 @@ CSV limpio guardado en:
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>stats.categorical_stats()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="categorical-stats" class="cell-output cell-output-display" data-execution_count="95">
+<div id="categorical-stats" class="cell-output cell-output-display" data-execution_count="6">
 <div>
 
 
@@ -869,9 +873,370 @@ CSV limpio guardado en:
 </div>
 </div>
 </div>
-
-
 </section>
+<section id="bienes-jurídicos-más-afectados" class="level3">
+<h3 class="anchored" data-anchor-id="bienes-jurídicos-más-afectados">Bienes Jurídicos más Afectados</h3>
+<div id="cell-affected-legal-assets" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>bien_juridico <span class="op">=</span> dataframe[<span class="st">"bien_juridico_afectado"</span>].value_counts()</span>
+<span id="cb11-2"><a href="#cb11-2"></a></span>
+<span id="cb11-3"><a href="#cb11-3"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb11-4"><a href="#cb11-4"></a>wedges, texts, autotexts <span class="op">=</span> ax.pie(</span>
+<span id="cb11-5"><a href="#cb11-5"></a>    bien_juridico.values, labels<span class="op">=</span>bien_juridico.index, autopct<span class="op">=</span><span class="st">"</span><span class="sc">%1.1f%%</span><span class="st">"</span>, startangle<span class="op">=</span><span class="dv">90</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7"></a>ax.set_title(</span>
+<span id="cb11-8"><a href="#cb11-8"></a>    <span class="st">"Distribución de Delitos por Bien Jurídico Afectado"</span>, fontsize<span class="op">=</span><span class="dv">11</span>, fontweight<span class="op">=</span><span class="st">"bold"</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a>)</span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="cf">for</span> autotext <span class="kw">in</span> autotexts:</span>
+<span id="cb11-11"><a href="#cb11-11"></a>    autotext.set_color(<span class="st">"white"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12"></a></span>
+<span id="cb11-13"><a href="#cb11-13"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="affected-legal-assets" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="eda_files/figure-html/affected-legal-assets-output-1.png" width="945" height="630" class="figure-img"></p>
+<figcaption>Bienes Jurídicos más Afectados por Delitos en México (2015-2025)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Para entender esta gráfica debemos entender que la ley define como ‘bienes jurídicos’ a aquellos objetos o relaciones, tangibles o intangibles, que cuentan con la protección de la ley, como un inmueble, la vida, dinero, etc. En particular, debemos entender que ‘El patrimonio’ hace referencia al conjunto de bienes, derechos y obligaciones de una persona, susceptibles de valoración económica. Lo anterior, en otros términos, se refiere a pertenencias que hemos comprado, dinero que tenga un individuo, etc, pero que tengan relevancia ecónomica.</p>
+<p>Ahora pues, tomando en cuenta de que el delito más reportado es el robo, que el patrimonio sea el bien más afectado tiene mucho sentido. Luego, al ser el homicidio, lesiones, secuestro y feminicidio los delitos que siguen en frecuencia, hace nuevamente sentido que la vida e integridad corportal sean el segundo bien más afectado.</p>
+</section>
+<section id="modalidad-de-delitos" class="level3">
+<h3 class="anchored" data-anchor-id="modalidad-de-delitos">Modalidad de Delitos</h3>
+<div id="cell-crime-modality" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>modalidad <span class="op">=</span> dataframe[<span class="st">"modalidad"</span>].value_counts().head(<span class="dv">15</span>) </span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb12-4"><a href="#cb12-4"></a>modalidad.plot(kind<span class="op">=</span><span class="st">"barh"</span>, ax<span class="op">=</span>ax, color<span class="op">=</span>[<span class="st">"#d62728"</span>, <span class="st">"#2ca02c"</span>])</span>
+<span id="cb12-5"><a href="#cb12-5"></a></span>
+<span id="cb12-6"><a href="#cb12-6"></a>ax.set_title(<span class="st">"Distribución de Delitos por Modalidad (Top 10, 2015-2025)"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7"></a>ax.set_xlabel(<span class="st">"Número de Registros"</span>)</span>
+<span id="cb12-8"><a href="#cb12-8"></a></span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(modalidad.values):</span>
+<span id="cb12-10"><a href="#cb12-10"></a>    ax.text(v <span class="op">+</span> <span class="dv">500</span>, i, <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:,}</span><span class="ss">"</span>, va<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb12-11"><a href="#cb12-11"></a></span>
+<span id="cb12-12"><a href="#cb12-12"></a>plt.tight_layout()</span>
+<span id="cb12-13"><a href="#cb12-13"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="crime-modality" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="eda_files/figure-html/crime-modality-output-1.png" width="962" height="944" class="figure-img"></p>
+<figcaption>Modalidad de Delitos en México (2015-2025)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Nuevamente, vemos también que hay una extranña coincidencia de valores después de la modalidad ‘En Accidente de Tráfico’, lo que sugiere y mantiene la idea de que existe un gran sesgo al momento de reportar correctamente todos los delitos.</p>
+<p>También notamos que no existe una única forma de reportar los delitos con violencia, por lo que un registro puede pertenecer a un delito con ésta modalidad y ser asignado a otra categoria (sobre todo en lo referente a los subtipos de robo).</p>
+</section>
+<section id="delincuencia-por-año" class="level3">
+<h3 class="anchored" data-anchor-id="delincuencia-por-año">Delincuencia por Año</h3>
+<div id="cell-crime-by-year" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>temporal <span class="op">=</span> dataframe.groupby(<span class="st">"fecha"</span>)[<span class="st">"incidencia_delictiva"</span>].<span class="bu">sum</span>().sort_index()</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb13-4"><a href="#cb13-4"></a>ax.plot(temporal.index, temporal.values, linewidth<span class="op">=</span><span class="dv">2</span>, color<span class="op">=</span><span class="st">"darkred"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5"></a>ax.fill_between(temporal.index, temporal.values, alpha<span class="op">=</span><span class="fl">0.2</span>, color<span class="op">=</span><span class="st">"red"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a>ax.set_title(</span>
+<span id="cb13-8"><a href="#cb13-8"></a>    <span class="st">"Evolución Temporal de la Incidencia Delictiva (2015-2025)"</span>,</span>
+<span id="cb13-9"><a href="#cb13-9"></a>    fontsize<span class="op">=</span><span class="dv">13</span>,</span>
+<span id="cb13-10"><a href="#cb13-10"></a>    fontweight<span class="op">=</span><span class="st">"bold"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12"></a>ax.set_xlabel(<span class="st">"Fecha"</span>)</span>
+<span id="cb13-13"><a href="#cb13-13"></a>ax.set_ylabel(<span class="st">"Incidencia Delictiva Total"</span>)</span>
+<span id="cb13-14"><a href="#cb13-14"></a>ax.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb13-15"><a href="#cb13-15"></a></span>
+<span id="cb13-16"><a href="#cb13-16"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb13-17"><a href="#cb13-17"></a>plt.tight_layout()</span>
+<span id="cb13-18"><a href="#cb13-18"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="crime-by-year" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="eda_files/figure-html/crime-by-year-output-1.png" width="945" height="561" class="figure-img"></p>
+<figcaption>Incidencia Delictiva por Año en México (2015-2025)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Vemos que, desafortunadamente, no existe un decrecimiento notable en cuanto a la delicuencia en este periodo de tiempo. E incluso, desde 2022 hacia adelante es donde se alcanzan números más alto.</p>
+<p>Veamos ahora como se ve ésta evolución dados los meses del año:</p>
+<div id="cell-crime-by-month" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>dataframe[<span class="st">"fecha"</span>] <span class="op">=</span> pd.to_datetime(dataframe[<span class="st">"fecha"</span>])</span>
+<span id="cb14-2"><a href="#cb14-2"></a>dataframe[<span class="st">"año"</span>] <span class="op">=</span> dataframe[<span class="st">"fecha"</span>].dt.year</span>
+<span id="cb14-3"><a href="#cb14-3"></a>dataframe[<span class="st">"mes"</span>] <span class="op">=</span> dataframe[<span class="st">"fecha"</span>].dt.month</span>
+<span id="cb14-4"><a href="#cb14-4"></a></span>
+<span id="cb14-5"><a href="#cb14-5"></a>pivot_data <span class="op">=</span> dataframe.groupby([<span class="st">"año"</span>, <span class="st">"mes"</span>])[<span class="st">"incidencia_delictiva"</span>].<span class="bu">sum</span>().unstack()</span>
+<span id="cb14-6"><a href="#cb14-6"></a></span>
+<span id="cb14-7"><a href="#cb14-7"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb14-8"><a href="#cb14-8"></a>sns.heatmap(</span>
+<span id="cb14-9"><a href="#cb14-9"></a>    pivot_data,</span>
+<span id="cb14-10"><a href="#cb14-10"></a>    cmap<span class="op">=</span><span class="st">"YlOrRd"</span>,</span>
+<span id="cb14-11"><a href="#cb14-11"></a>    annot<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb14-12"><a href="#cb14-12"></a>    fmt<span class="op">=</span><span class="st">"d"</span>,</span>
+<span id="cb14-13"><a href="#cb14-13"></a>    cbar_kws<span class="op">=</span>{<span class="st">"label"</span>: <span class="st">"Incidencia Delictiva"</span>},</span>
+<span id="cb14-14"><a href="#cb14-14"></a>    ax<span class="op">=</span>ax,</span>
+<span id="cb14-15"><a href="#cb14-15"></a>)</span>
+<span id="cb14-16"><a href="#cb14-16"></a></span>
+<span id="cb14-17"><a href="#cb14-17"></a>ax.set_title(</span>
+<span id="cb14-18"><a href="#cb14-18"></a>    <span class="st">"Patrón Mensual de Delincuencia por Año (2015-2025)"</span>, fontsize<span class="op">=</span><span class="dv">13</span>, fontweight<span class="op">=</span><span class="st">"bold"</span></span>
+<span id="cb14-19"><a href="#cb14-19"></a>)</span>
+<span id="cb14-20"><a href="#cb14-20"></a>ax.set_xlabel(<span class="st">"Mes"</span>)</span>
+<span id="cb14-21"><a href="#cb14-21"></a>ax.set_ylabel(<span class="st">"Año"</span>)</span>
+<span id="cb14-22"><a href="#cb14-22"></a></span>
+<span id="cb14-23"><a href="#cb14-23"></a>plt.tight_layout()</span>
+<span id="cb14-24"><a href="#cb14-24"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="crime-by-month" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="eda_files/figure-html/crime-by-month-output-1.png" width="931" height="945" class="figure-img"></p>
+<figcaption>Incidencia Delictiva por Mes en México (2015-2025)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Vemos que en particular, de 2021 a 2025 el foco ha sido entre Marzo a Junio. Mientras que en años anteriores habia sido de Mayo a Agosto (2015-2019). Lo que si es más fácil de notar con esto es que 2020 tiene los valores más bajos de todos los años del conjunto, lo que puede deberse a que la incidencia delicitiva realmente bajó durante ese periodo o que directamente no se reportó por completo.</p>
+</section>
+</section>
+<section id="detección-de-outliers" class="level1">
+<h1>Detección de Outliers</h1>
+<p>Para detectar outliers lo que haremos será ocupar IQR. Por lo anterior notamos que la incidencia delictiva está fuertemente sesgada a la derecha por la CDMX y Edomex, ya que disparan los valores frente a estados pequeños. El z-score asume normalidad y los propios extremos inflan media y desviación, así que ocupar ésta medida reportaría resultados sesgados.</p>
+<p>Luego, en luga de eliminar estos valores directamente, lo que haremos será identificarlos y añadir una columna extra en donde se indique si son o no outliers. Esto por que estos registros atípicos no son inicialmente errores de captura si no señales reales de la delincuencia en el país, y eliminar estos valores distorsionaría el análisis.</p>
+<p>Para esto lo que haremos será ocupar la clase OutlierDetector que, como su nombre lo indica, identificará los valores atípicos y luego usaremos su método <code>flag()</code> para aplicar ésta identificación a un nuevo dataframe.</p>
+<div id="cell-outlier-detection" class="cell" data-execution_count="15">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>det <span class="op">=</span> OutlierDetector(dataframe, columns<span class="op">=</span>[<span class="st">"incidencia_delictiva"</span>])</span>
+<span id="cb15-2"><a href="#cb15-2"></a>det.summary()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="outlier-detection" class="cell-output cell-output-display" data-execution_count="14">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">columna</th>
+<th data-quarto-table-cell-role="th">n_total</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">max</th>
+<th data-quarto-table-cell-role="th">lower</th>
+<th data-quarto-table-cell-role="th">upper</th>
+<th data-quarto-table-cell-role="th">n_outliers</th>
+<th data-quarto-table-cell-role="th">pct_outliers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>incidencia_delictiva</td>
+<td>413952</td>
+<td>0.0</td>
+<td>9968.0</td>
+<td>-39.0</td>
+<td>65.0</td>
+<td>63128</td>
+<td>15.250077</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Vemos que del total de registros,</p>
+<div id="cell-outlier-flagging" class="cell" data-execution_count="16">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>det.flag()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="outlier-flagging" class="cell-output cell-output-display" data-execution_count="15">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">fecha</th>
+<th data-quarto-table-cell-role="th">entidad</th>
+<th data-quarto-table-cell-role="th">bien_juridico_afectado</th>
+<th data-quarto-table-cell-role="th">tipo_delito</th>
+<th data-quarto-table-cell-role="th">subtipo_delito</th>
+<th data-quarto-table-cell-role="th">modalidad</th>
+<th data-quarto-table-cell-role="th">incidencia_delictiva</th>
+<th data-quarto-table-cell-role="th">año</th>
+<th data-quarto-table-cell-role="th">mes</th>
+<th data-quarto-table-cell-role="th">incidencia_delictiva_is_outlier</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2015-04-01</td>
+<td>Aguascalientes</td>
+<td>El patrimonio</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>22</td>
+<td>2015</td>
+<td>4</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>2015-08-01</td>
+<td>Aguascalientes</td>
+<td>El patrimonio</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>40</td>
+<td>2015</td>
+<td>8</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2015-12-01</td>
+<td>Aguascalientes</td>
+<td>El patrimonio</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>26</td>
+<td>2015</td>
+<td>12</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>2015-01-01</td>
+<td>Aguascalientes</td>
+<td>El patrimonio</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>41</td>
+<td>2015</td>
+<td>1</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>2015-02-01</td>
+<td>Aguascalientes</td>
+<td>El patrimonio</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>Abuso de confianza</td>
+<td>33</td>
+<td>2015</td>
+<td>2</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">413947</th>
+<td>2025-03-01</td>
+<td>Zacatecas</td>
+<td>Otros bienes jurídicos afectados (del fuero común)</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>184</td>
+<td>2025</td>
+<td>3</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">413948</th>
+<td>2025-05-01</td>
+<td>Zacatecas</td>
+<td>Otros bienes jurídicos afectados (del fuero común)</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>98</td>
+<td>2025</td>
+<td>5</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">413949</th>
+<td>2025-11-01</td>
+<td>Zacatecas</td>
+<td>Otros bienes jurídicos afectados (del fuero común)</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>92</td>
+<td>2025</td>
+<td>11</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">413950</th>
+<td>2025-10-01</td>
+<td>Zacatecas</td>
+<td>Otros bienes jurídicos afectados (del fuero común)</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>99</td>
+<td>2025</td>
+<td>10</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">413951</th>
+<td>2025-09-01</td>
+<td>Zacatecas</td>
+<td>Otros bienes jurídicos afectados (del fuero común)</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>Otros delitos del Fuero Común</td>
+<td>133</td>
+<td>2025</td>
+<td>9</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+
+<p>413952 rows × 10 columns</p>
+</div>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->

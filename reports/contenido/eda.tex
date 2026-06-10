@@ -1,0 +1,225 @@
+\section{Análisis Exploratorio de Datos}
+
+Haremos un análisis exploratorio para conocer el dataset en profundidad y poder identificar patrones, tendencias y relaciones entre las variables.
+Esto nos permitirá tomar decisiones informadas sobre cómo abordar el problema de la incidencia delictiva más adelante en el proyecto,
+principalmente para crear el modelo de predicción adecuado a este problema.
+
+Para esto, haremos limpieza, análisis estadístico, detección de outliers y visualización de los datos.
+
+\subsection{Diccionario de Datos}
+
+\begin{table}[ht]
+  \centering
+  \caption{Diccionario de datos}
+  \small
+  \begin{tabular}{r l p{0.65\textwidth}}
+    \hline
+    \textbf{Índice} & \textbf{Nombre (tipo)} & \textbf{Descripción} \\
+    \hline
+    0 & \texttt{anio} (int64) & Año de registro de las averiguaciones previas y/o carpetas de investigación. \\
+    1 & \texttt{clave\_ent} (int64) & Clave de la entidad, según el Marco Geoestadístico Nacional (MGN) del Instituto Nacional de Geografía y Estadística (INEGI). \\
+    2 & \texttt{entidad} (str) & Entidad federativa de registro de las averiguaciones previas y/o carpetas de investigación. \\
+    3 & \texttt{bien\_juridico\_afectado} (str) & Primera clasificación de los delitos en las averiguaciones previas y/o carpetas de investigación. (Patrimonio, vida, libertad, etc.) \\
+    4 & \texttt{tipo\_delito} (str) & Segunda clasificación de los delitos. (Falsedad, Lesiones, Robo, etc.) \\
+    5 & \texttt{subtipo\_delito} (str) & Tercera clasificación de los delitos. Subcategorías específicas de cada tipo de delito. (Lesiones dolosas, etc.). \\
+    6 & \texttt{modalidad} (str) & Cuarta clasificación de los delitos. Forma en la que se comete el delito. (Con violencia, sin violencia, etc.) \\
+    7 & \texttt{mes} (str) & Mes de registro de las averiguaciones previas y/o carpetas de investigación. \\
+    8 & \texttt{fecha} (str) & Fecha de registro de las averiguaciones previas y/o carpetas de investigación. \\
+    9 & \texttt{incidencia\_delictiva} (int64) & Incidencia delictiva del Fuero Común (Número absoluto de presuntos delitos registrados). \\
+    10 & \texttt{entidad\_federativa} (str) & Entidad federativa de registro de las averiguaciones previas y/o carpetas de investigación. \\
+    \hline
+  \end{tabular}
+  \label{tab:diccionario-datos}
+\end{table}
+
+\subsection{Overview del Dataset}
+
+\begin{table}[ht]
+  \centering
+  \caption{Muestra del dataset: primeras filas}
+  \scriptsize
+  \begin{tabular}{r r r l p{3.5cm} p{3cm} p{3cm} p{2.5cm} l l r l}
+    \hline
+    \textbf{idx} & \textbf{anio} & \textbf{clave\_ent} & \textbf{entidad} & \textbf{bien\_juridico\_afectado} & \textbf{tipo\_delito} & \textbf{subtipo\_delito} & \textbf{modalidad} & \textbf{mes} & \textbf{fecha} & \textbf{incidencia\_delictiva} & \textbf{entidad\_federativa} \\
+    \hline
+    0 & 2015 & 1 & Aguascalientes & El patrimonio & Abuso de confianza & Abuso de confianza & Abuso de confianza & Abril & 2015-04-01 & 22 & Aguascalientes \\
+    1 & 2015 & 1 & Aguascalientes & El patrimonio & Abuso de confianza & Abuso de confianza & Abuso de confianza & Agosto & 2015-08-01 & 40 & Aguascalientes \\
+    2 & 2015 & 1 & Aguascalientes & El patrimonio & Abuso de confianza & Abuso de confianza & Abuso de confianza & Diciembre & 2015-12-01 & 26 & Aguascalientes \\
+    3 & 2015 & 1 & Aguascalientes & El patrimonio & Abuso de confianza & Abuso de confianza & Abuso de confianza & Enero & 2015-01-01 & 41 & Aguascalientes \\
+    4 & 2015 & 1 & Aguascalientes & El patrimonio & Abuso de confianza & Abuso de confianza & Abuso de confianza & Febrero & 2015-02-01 & 33 & Aguascalientes \\
+    \hline
+  \end{tabular}
+  \label{tab:dataset-head}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \caption{Muestra del dataset: últimas filas}
+  \scriptsize
+  \begin{tabular}{r r r l p{3.5cm} p{3cm} p{3cm} p{2.5cm} l l r l}
+    \hline
+    \textbf{idx} & \textbf{anio} & \textbf{clave\_ent} & \textbf{entidad} & \textbf{bien\_juridico\_afectado} & \textbf{tipo\_delito} & \textbf{subtipo\_delito} & \textbf{modalidad} & \textbf{mes} & \textbf{fecha} & \textbf{incidencia\_delictiva} & \textbf{entidad\_federativa} \\
+    \hline
+    413947 & 2025 & 32 & Zacatecas & Otros bienes jurídicos afectados (del fuero común) & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Marzo & 2025-03-01 & 184 & Zacatecas \\
+    413948 & 2025 & 32 & Zacatecas & Otros bienes jurídicos afectados (del fuero común) & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Mayo & 2025-05-01 & 98 & Zacatecas \\
+    413949 & 2025 & 32 & Zacatecas & Otros bienes jurídicos afectados (del fuero común) & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Noviembre & 2025-11-01 & 92 & Zacatecas \\
+    413950 & 2025 & 32 & Zacatecas & Otros bienes jurídicos afectados (del fuero común) & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Octubre & 2025-10-01 & 99 & Zacatecas \\
+    413951 & 2025 & 32 & Zacatecas & Otros bienes jurídicos afectados (del fuero común) & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Otros delitos del Fuero Común & Septiembre & 2025-09-01 & 133 & Zacatecas \\
+    \hline
+  \end{tabular}
+  \label{tab:dataset-tail}
+\end{table}
+
+El dataset contiene 413,952 registros que abarcan desde enero de 2015 hasta diciembre de 2025 (11 años).
+Los datos están organizados a nivel estatal con granularidad mensual (32 entidades × 40+ tipos de delito × 132 meses),
+lo que nos permite hacer análisis longitudinales de la evolución del delito en cada estado.
+
+\subsection{Calidad y Limpieza de los Datos}
+
+Haremos lo siguiente con el dataset original:
+
+\begin{itemize}
+  \item Borramos las columnas \texttt{anio} y \texttt{mes} para poder trabajar únicamente con fecha. Posteriormente, ésta última pasará a ser de tipo \texttt{datetime}.
+  \item \texttt{entidad\_federativa} es un duplicado de \texttt{entidad}, por lo que borramos ésta columna.
+  \item \texttt{clave\_entidad} no nos es de utilidad al ya tener el nombre de las entidades, por lo que borramos ésta columna.
+  \item Analizamos el dataset en busca de duplicados y valores nulos.
+  \item Consideraremos que una entrada es inválida si tiene valores NaN en \texttt{incidencia\_delictiva}, \texttt{fecha} y \texttt{entidad}. Una vez detectadas, serán eliminadas.
+  \item Por revisión manual, vemos que algunos estados tienen su nombre completo, como \texttt{Veracruz de Ignacio de la Llave}. Acortaremos el nombre de estos estados para una visualización más limpia de la información.
+\end{itemize}
+
+
+\begin{lstlisting}
+[1] Eliminando columnas declaradas en drop_columns
+ Eliminadas: ['anio', 'clave_ent', 'mes', 'entidad_federativa']
+[2] Convirtiendo '{self._date_col}' a datetime
+   OK=413,952 / fallidos=0
+ Rango: 2015-01-01 → 2025-12-01
+[3] Eliminando filas con nulos en críticas
+Filas: 413,952 -> 413,952 (eliminadas: 0)
+[4] Eliminando duplicados exactos
+Filas: 413,952 -> 413,952 (eliminadas: 0)
+[5] Normalizando nombres de entidades federativas
+\end{lstlisting}
+
+Vemos que, a pesar de ser un dataset de origen gubernamental, éste no contiene duplicados ni entradas inválidas. Por lo que solo se
+realizó la conversión de fechas y la eliminación de las columnas con las que no trabajaremos.
+
+\subsection{Estadísticas Descriptivas Numéricas}
+
+En base a la naturaleza de nuestro dataset, el análisis estadístico se centrará principalmente en la variable \texttt{incidencia\_delictiva},
+que representa el número de delitos reportados para cada combinación de estado, tipo de delito y fecha.
+
+Veamos algunas estadísticas descriptivas clave para esta variable (código):
+
+\begin{table}[ht]
+  \centering
+  \caption{Estadísticas Descriptivas Numéricas}
+  \scriptsize
+  \begin{tabular}{r r r l p{3.5cm} p{3cm} p{3cm} p{2.5cm} l l r l}
+    \hline
+    \textbf{columna} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación Estándar} & \textbf{Valor Mínimo} & \textbf{Q1} & \textbf{Q3} & \textbf{Valor Máximo} & \textbf{Rango} \\
+    0 & incidencia\_delictiva & 52.499106 & 2.0 & 204.518424 & 0.0 & 0.0 & 26.0 & 9968.0 & 9968.0 \\
+    \hline
+  \end{tabular}
+  \label{tab:numeric-stats}
+\end{table}
+
+La media (52.5) es muy superior a la mediana (2.0), lo que indica un sesgo severo hacia la derecha. La mayoría de los registros
+tienen baja incidencia (~2 delitos), pero algunos delitos registran valores enormes (siendo 9,968 el valor máximo). Sin embargo,
+en un contexto real, la CDMX y el EdoMex son probablemente las entidades con valores más altos y más concentrados debido a su población
+y urbanización. Validaremos esto más adelante.
+
+En ese sentido, esto no sería (necesariamente) un sesgo en los datos, si no que refleja disparidades geográficas genuinas en la delincuencia.
+Sin embargo, eso no significa que, nuevamente en un contexto real, no se reporte de la misma manera en otros estados.
+
+\subsubsection{Histogramas de incidencia delictiva}
+
+% Figura de marcador de posición para los histogramas (reemplazar la imagen por la salida real más adelante)
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\textwidth]{imagenes/delective-incidence-histograms-output-1.png}
+  \caption{Histogramas de Incidencia Delictiva por Estado (marcador de posición)}
+  \label{fig:incidence-histograms}
+\end{figure}
+
+El primer gráfico muestra una distribución con un sesgo hacia la derecha extremadamente severa. La inmensa mayoría de los registros
+del dataset se concentran de forma masiva en valores muy cercanos a cero (recordemos que la mediana del dataset es de 2 delitos por registro).
+Esto se debe a que existen muchas categorías de delitos poco comunes o entidades con menor población que reportan frecuentemente cero u
+muy pocas incidencias mensuales de estos delitos no tan comúnes. Visualmente, esto genera una gran "pared" en el extremo izquierdo
+y una cola invisible infinitamente larga hacia la derecha que se extiende hasta el valor máximo de 9,968.
+
+Con el segundo gráfico queremos reevelar la distribución real que queda oculta bajo el sesgo. Para esto se aplicó una escala logarítmica
+sobre el eje de las abscisas (filtrando los registros con elitos). Esto nos da distribución con dos picos:
+
+\begin{itemize}
+  \item El primero muestra cuando se registran de 1 a 3 delitos en promedio. Esto representa la gran masa de reportes delictivos de baja
+ocurrencia o zonas con baja densidad demográfica.
+  \item El segundo muestra cuando se registran de 30 a 100 delitos en promedio. Esto representa la acumulación de delitos altamente recurrentes
+(como variantes de robos) en zonas urbanas o de alta incidencia.
+\end{itemize}
+
+\subsection{Estadísticas Descriptivas Categóricas}
+
+\begin{table}[ht]
+  \centering
+  \caption{Estadísticas Descriptivas Categóricas}
+  \scriptsize
+  \begin{tabular}{r r r l p{3.5cm} p{3cm} p{3cm} p{2.5cm} l l r l}
+    \hline
+    \textbf{columna} & \textbf{valores únicos} & \textbf{moda} & \textbf{frecuencia modal} \\
+    0 & fecha & 132 & 2015-04-01 & 3136 \\
+    1 & entidad & 32 & Aguascalientes & 12936 \\
+    2 & bien\_juridico\_afectado & 7 & El patrimonio & 177408 \\
+    3 & tipo\_delito & 40 & Robo & 152064 \\
+    4 & subtipo\_delito & 55 & Robo de maquinaria & 25344 \\
+    5 & modalidad & 59 & Con violencia & 50688 \\
+    \hline
+  \end{tabular}
+  \label{tab:categorical-stats}
+\end{table}
+
+En cuanto a las variables categóricas del conjunto de datos podemos notar hechos bastante interesantes a pesar de la inmensidad del dataset:
+
+\begin{itemize}
+  \item El dataset es de 11 años, sin embargo, solo hay 132 fechas únicas, con la fecha inicial siendo el 01 de enero de 2015
+  \item La moda del dataset tiene algunos resultados curiosos. Este conjunto de datos es simetrico para cada estado, ya que existen 12936
+líneas para c/u. Entonces, al querer cálcular la moda se toma el valor inicial de manera alfabética y resulta ser Aguascalientes.
+Sin embargo, esto no significa que sea la entidad con mayor apariciones del dataset.
+  \item Lo anterior pasa de igual manera con la fecha, ya que toma la primera fecha del dataset para calcular este valor.
+  \item El dataset reporta 40 tipos de delitos únicos reportados, con Robo siendo la categoría principal.
+\end{itemize}
+
+Veamos ahora un análisis más detallado de las variables categóricas.
+
+\subsubsection{Delitos más Comunes}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{imagenes/most-common-crimes-output-1.png}
+  \caption{Top 10 Tipos de Delito}
+  \label{fig:top-crimes}
+\end{figure}
+
+Como se mencionaba en la tabla anterior, robo es el delito más reportado, seguido de homicidio y lesiones. Algo a recordar
+es que aunque los feminicidios son también homicidios éstos están en una categoriá separada debido al motivo por el que ocurren.
+Vemos también que hay una extraña coincidencia de valores entre Abuso de Confianza, Daño a la Propiedad, Despojo, Extorsión y Fraude,
+lo que sugiere un sesgo al momento de reportar estos delitos por parte de la autoridad (por ejemplo, cifras redondeadas, reportes nulos, etc.)
+
+\subsubsection{Incidencia Delictiva por Estado}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{imagenes/crime-by-state-output-1.png}
+  \caption{Incidencia Delictiva Total por Entidad}
+  \label{fig:crime-by-state}
+\end{figure}
+
+Nuestra sospecha anterior que la EdoMex y la CDMX son los estados con más reportes es correcta. Vemos que le siguen Jalisco,
+Guanajuato y Baja California y que, a pesar de la moda, Aguascalientes no figura dentro de los estados con más delitos reportados.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{imagenes/crime-heatmap-output-1.png}
+  \caption{Mapa de calor de incidencia por entidad y tipo de delito}
+  \label{fig:crime-heatmap}
+\end{figure}
