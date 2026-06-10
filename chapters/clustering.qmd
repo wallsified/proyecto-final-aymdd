@@ -16,6 +16,8 @@ Bajo este enfoque, la pregunta principal que guía el análisis es:
 
 > _¿Qué tipo de delincuencia predomina en cada entidad federativa y qué estados comparten perfiles delictivos similares?_
 
+El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click [aquí](https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/clustering.ipynb).
+
 # ¿Por qué se decidio usar K-Means?
 
 Se seleccionó K-Means como algoritmo de agrupamiento debido a que las variables utilizadas corresponden a proporciones

@@ -8,6 +8,9 @@ principalmente para crear el modelo de predicción adecuado a este problema.
 
 Para esto, haremos limpieza, análisis estadístico, detección de outliers y visualización de los datos.
 
+
+El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click [aquí](https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/eda.ipynb).
+
 ## Diccionario de Datos
 
 ```{python}

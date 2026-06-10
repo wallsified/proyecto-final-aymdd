@@ -164,7 +164,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container">
-  <a href="../chapters/models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Modelos</span></a>
+  <a href="../chapters/models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Modelo Predictivo de Incidencia Delictiva Estatal</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -227,6 +227,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>Haremos un EDA para conocer el dataset en profundir y poder identificar patrones, tendencias y relaciones entre las variables. Esto nos permitirá tomar decisiones informadas sobre cómo abordar el problema de la incidencia delictiva más adelante en el proyecto, principalmente para crear el modelo de predicción adecuado a este problema.</p>
 <p>Para esto, haremos limpieza, análisis estadístico, detección de outliers y visualización de los datos.</p>
+<p>El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click <a href="https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/eda.ipynb">aquí</a>.</p>
 <section id="diccionario-de-datos" class="level2">
 <h2 class="anchored" data-anchor-id="diccionario-de-datos">Diccionario de Datos</h2>
 <div id="cell-data-load-dictionary" class="cell" data-execution_count="2">
@@ -910,7 +911,7 @@ CSV limpio guardado en:
 <div id="cell-crime-modality" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Mostrar código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>modalidad <span class="op">=</span> dataframe[<span class="st">"modalidad"</span>].value_counts().head(<span class="dv">15</span>) </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>modalidad <span class="op">=</span> dataframe[<span class="st">"modalidad"</span>].value_counts().head(<span class="dv">15</span>)</span>
 <span id="cb12-2"><a href="#cb12-2"></a></span>
 <span id="cb12-3"><a href="#cb12-3"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
 <span id="cb12-4"><a href="#cb12-4"></a>modalidad.plot(kind<span class="op">=</span><span class="st">"barh"</span>, ax<span class="op">=</span>ax, color<span class="op">=</span>[<span class="st">"#d62728"</span>, <span class="st">"#2ca02c"</span>])</span>
@@ -1014,8 +1015,7 @@ CSV limpio guardado en:
 <section id="detección-de-outliers" class="level1">
 <h1>Detección de Outliers</h1>
 <p>Para detectar outliers lo que haremos será ocupar IQR. Por lo anterior notamos que la incidencia delictiva está fuertemente sesgada a la derecha por la CDMX y Edomex, ya que disparan los valores frente a estados pequeños. El z-score asume normalidad y los propios extremos inflan media y desviación, así que ocupar ésta medida reportaría resultados sesgados.</p>
-<p>Luego, en luga de eliminar estos valores directamente, lo que haremos será identificarlos y añadir una columna extra en donde se indique si son o no outliers. Esto por que estos registros atípicos no son inicialmente errores de captura si no señales reales de la delincuencia en el país, y eliminar estos valores distorsionaría el análisis.</p>
-<p>Para esto lo que haremos será ocupar la clase OutlierDetector que, como su nombre lo indica, identificará los valores atípicos y luego usaremos su método <code>flag()</code> para aplicar ésta identificación a un nuevo dataframe.</p>
+<p>Para esto lo que haremos será ocupar la clase <code>OutlierDetector</code> que, como su nombre lo indica, identificará los valores atípicos y luego usaremos su método <code>flag()</code> para aplicar ésta identificación a un nuevo dataframe.</p>
 <div id="cell-outlier-detection" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Mostrar código</summary>
@@ -1058,7 +1058,8 @@ CSV limpio guardado en:
 </div>
 </div>
 </div>
-<p>Vemos que del total de registros,</p>
+<p>Vemos que del total de registros, 63128 fueron identificados como outliers, lo que representa aproximadamente el 15.25% del dataset. Esto es un porcentaje considerable, pero dado el contexto de la delincuencia en México, es comprensible que existan registros con incidencias extremadamente altas, especialmente en entidades como la CDMX y el EdoMex.</p>
+<p>Sin embargo, es importante destacar que estos outliers no necesariamente representan errores en los datos, sino que reflejan la realidad de la incidencia delictiva en ciertas regiones y periodos. Por lo tanto, en lugar de eliminar estos registros, se ha optado por marcarlos con una nueva columna para su posterior análisis y consideración en cualquier modelado o interpretación de los datos. De esta manera, los datos se muestran como sigue:</p>
 <div id="cell-outlier-flagging" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Mostrar código</summary>

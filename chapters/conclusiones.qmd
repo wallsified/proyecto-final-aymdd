@@ -2,3 +2,28 @@
 title: Conclusiones
 ---
 
+El análisis integral de la incidencia delictiva en México entre 2015 y 2025 demuestra que la criminalidad
+no es un fenómeno aleatorio, sino que sigue patrones sistemáticos determinados por la ubicación geográfica,
+la clasificación delictiva y las condiciones temporales. El modelo predictivo de Random Forest alcanzó un R²
+de 0.93, lo que confirma que el 93% de la variación en la incidencia delictiva puede explicarse mediante la
+entidad federativa, el tipo de delito y variables como año, mes y trimestre. Esto descarta la hipótesis de
+caos o impredecibilidad: los patrones delictivos son estables y recurrentes bajo condiciones normales, lo
+cual es relevante para la planeación de políticas públicas de seguridad.
+
+El análisis exploratorio reveló que la incidencia delictiva no ha disminuido en más de una década, con un
+incremento notable a partir de 2022, y que los picos se concentran entre marzo y junio en los años recientes.
+El robo es el delito más reportado a nivel nacional, mientras que estados como el Estado de México, CDMX y
+Jalisco lideran en volumen absoluto. El clustering identificó cuatro perfiles delictivos claramente
+diferenciados: un perfil de violencia contra las personas (sur y centro-pacífico), uno patrimonial
+(áreas urbanas de alta densidad), uno familiar y de libertad personal, y uno diversificado. Estos perfiles
+permiten entender que cada entidad federativa enfrenta dinámicas criminales distintas que requieren
+estrategias de prevención diferenciadas.
+
+Entre las limitaciones del proyecto destacan que el modelo aprende de patrones históricos y no puede
+anticipar eventos anómalos como pandemias o crisis políticas, y que los datos dependen de denuncias
+ante el Ministerio Público, lo que puede generar subreporte en ciertas zonas. Además, el modelo identifica
+correlaciones, no causalidades: saber que CDMX tiene alta incidencia de robo no explica por qué ocurre.
+
+No obstante, el proyecto logra su objetivo principal de proporcionar una herramienta analítica que permite
+identificar los delitos más probables por estado y predecir su incidencia, ofreciendo una base sólida para
+la toma de decisiones en materia de seguridad pública.

@@ -25,7 +25,6 @@ book:
     - chapters/models.qmd
     - chapters/clustering.qmd
     - chapters/conclusiones.qmd
-  #cover-image: "images/cover.png"
   favicon: "images/favicon.png"
   search: true
   repo-url: https://github.com/wallsified/proyecto-final-aymdd"

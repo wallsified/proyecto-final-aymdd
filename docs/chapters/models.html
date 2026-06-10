@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Modelos – Incidencia Delictiva Estatal</title>
+<title>Modelo Predictivo de Incidencia Delictiva Estatal – Incidencia Delictiva Estatal</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -72,6 +107,9 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -85,7 +123,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/models.html"><span class="chapter-title">Modelos</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/models.html"><span class="chapter-title">Modelo Predictivo de Incidencia Delictiva Estatal</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -126,7 +164,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container">
-  <a href="../chapters/models.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Modelos</span></a>
+  <a href="../chapters/models.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Modelo Predictivo de Incidencia Delictiva Estatal</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -141,23 +179,45 @@ ul.task-list li input[type="checkbox"] {
 </li>
     </ul>
     </div>
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido del Documento</h2>
 
+  <ul>
+  <li><a href="#carga-y-preparación-de-datos" id="toc-carga-y-preparación-de-datos" class="nav-link active" data-scroll-target="#carga-y-preparación-de-datos">Carga y preparación de datos</a></li>
+  <li><a href="#preprocesamiento-y-división-traintest" id="toc-preprocesamiento-y-división-traintest" class="nav-link" data-scroll-target="#preprocesamiento-y-división-traintest">Preprocesamiento y división train/test</a></li>
+  <li><a href="#entrenamiento-del-modelo" id="toc-entrenamiento-del-modelo" class="nav-link" data-scroll-target="#entrenamiento-del-modelo">Entrenamiento del modelo</a></li>
+  <li><a href="#evaluación-del-modelo" id="toc-evaluación-del-modelo" class="nav-link" data-scroll-target="#evaluación-del-modelo">Evaluación del modelo</a>
+  <ul class="collapse">
+  <li><a href="#importancia-de-features" id="toc-importancia-de-features" class="nav-link" data-scroll-target="#importancia-de-features">Importancia de features</a></li>
+  </ul></li>
+  <li><a href="#interpretación-del-modelo" id="toc-interpretación-del-modelo" class="nav-link" data-scroll-target="#interpretación-del-modelo">Interpretación del Modelo</a>
+  <ul class="collapse">
+  <li><a href="#análisis-gráfico" id="toc-análisis-gráfico" class="nav-link" data-scroll-target="#análisis-gráfico">Análisis gráfico</a></li>
+  </ul></li>
+  <li><a href="#comparación-con-línea-base" id="toc-comparación-con-línea-base" class="nav-link" data-scroll-target="#comparación-con-línea-base">Comparación con Línea Base</a></li>
+  <li><a href="#persistencia-del-modelo" id="toc-persistencia-del-modelo" class="nav-link" data-scroll-target="#persistencia-del-modelo">Persistencia del modelo</a></li>
+  <li><a href="#conclusiones-sobre-el-modelo" id="toc-conclusiones-sobre-el-modelo" class="nav-link" data-scroll-target="#conclusiones-sobre-el-modelo">Conclusiones sobre el modelo</a>
+  <ul class="collapse">
+  <li><a href="#limitaciones" id="toc-limitaciones" class="nav-link" data-scroll-target="#limitaciones">Limitaciones</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd&quot;/edit/main/chapters/models.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li></ul></div><div class="quarto-code-links"><h2>Enlaces de código</h2><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd"><i class="bi bi-github"></i>Repositorio del Proyecto</a></li><li><a href="example.com"><i class="bi bi-easel-fill"></i>Presentación</a></li><li><a href="example.com"><i class="bi bi-file-earmark-pdf-fill"></i>Descargar PDF</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <div class="quarto-code-links"><h2>Enlaces de código</h2><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd"><i class="bi bi-github"></i>Repositorio del Proyecto</a></li><li><a href="example.com"><i class="bi bi-easel-fill"></i>Presentación</a></li><li><a href="example.com"><i class="bi bi-file-earmark-pdf-fill"></i>Descargar PDF</a></li></ul></div></div>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
 <!-- main -->
-<main class="content column-body" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Modelos</span></h1>
+<h1 class="title"><span class="chapter-title">Modelo Predictivo de Incidencia Delictiva Estatal</span></h1>
 </div>
 
 
 
-<div class="quarto-title-meta column-body">
+<div class="quarto-title-meta column-page-right">
 
 
 
@@ -169,8 +229,479 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>Ahora, lo que buscamos es construir un modelo de regresión capaz de predecir la incidencia delictiva mensual a nivel estatal en México, utilizando como variables predictoras la entidad federativa, el bien jurídico afectado, el tipo y subtipo de delito, la modalidad y <em>features</em> temporales (año, mes, trimestre).</p>
+<p>Para esto utilizaremos un <strong>Random Forest Regressor</strong> dentro de un pipeline de scikit-learn que incluye lo siguiente:</p>
+<ul>
+<li><strong>Preprocesamiento</strong>: codificación One-Hot de variables categóricas y estandarización de variables numéricas.</li>
+<li><strong>Búsqueda de hiperparámetros</strong>: Usaremos <code>RandomizedSearchCV</code> con validación cruzada de 3 pliegues, más eficiente que una búsqueda exhaustiva para este volumen de datos.</li>
+<li><strong>Transformación del objetivo</strong>: Aplicaremos <code>log1p</code> a la variable objetivo para mitigar el sesgo observado en el EDA.</li>
+</ul>
+<p>El dataset contiene ~414,000 registros de incidencia delictiva estatal , por lo que trabajar con todos estos registros es demasiado pesado en recursos. Es por esto que para este modelo trabajaremos con una muestra estratificada de 50,000 registros que preserva la proporción de tipos de delito.</p>
+<p>El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click <a href="https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/models.ipynb">aquí</a>.</p>
+<div id="ef1a78ad" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a>sys.path.insert(<span class="dv">0</span>, <span class="bu">str</span>(Path.cwd().parent))</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="im">from</span> src.model.preprocesamiento <span class="im">import</span> (</span>
+<span id="cb1-14"><a href="#cb1-14"></a>    cargar_preparar_datos,</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    separar_features_target,</span>
+<span id="cb1-16"><a href="#cb1-16"></a>    construir_preprocesador,</span>
+<span id="cb1-17"><a href="#cb1-17"></a>)</span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="im">from</span> src.model.entrenamiento <span class="im">import</span> entrenar_random_forest</span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="im">from</span> src.model.evaluacion <span class="im">import</span> evaluar_modelo, grafica_predicciones, grafica_residuales</span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="im">from</span> src.model.persistencia <span class="im">import</span> guardar_modelo</span>
+<span id="cb1-21"><a href="#cb1-21"></a></span>
+<span id="cb1-22"><a href="#cb1-22"></a>pd.set_option(<span class="st">"display.max_columns"</span>, <span class="dv">20</span>)</span>
+<span id="cb1-23"><a href="#cb1-23"></a>pd.set_option(<span class="st">"display.width"</span>, <span class="dv">140</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="carga-y-preparación-de-datos" class="level1">
+<h1>Carga y preparación de datos</h1>
+<p>Cargamos el dataset limpio resultado del EDA y aplicamos un muestreo estratificado sobre la columna <code>tipo_delito</code> para reducir los ~414,000 registros a 50,000. Esto preserva la distribución de tipos de delito y reduce drásticamente el tiempo de entrenamiento sin comprometer la calidad del modelo, ya que Random Forest muestra rendimientos decrecientes con volúmenes de datos muy grandes.</p>
+<p>Luego, separamos las features de nuestra variable objetivo: <code>incidencia_delictiva</code>, y aplicamos una transformación logarítmica con <code>log1p</code> para compensar el fuerte sesgo a la derecha observado en el EDA.</p>
+<div id="455ebb29" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>RUTA_DATOS <span class="op">=</span> <span class="bu">str</span>(Path.cwd().parent <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"processed"</span> <span class="op">/</span> <span class="st">"INM_estatal_dic25_clean.csv"</span>) <span class="co"># por alguna razón así identificó más fácil la ruta</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>df <span class="op">=</span> cargar_preparar_datos(RUTA_DATOS)</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="bu">print</span>(<span class="ss">f"Muestra estratificada: </span><span class="sc">{</span>df<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:,}</span><span class="ss"> filas x </span><span class="sc">{</span>df<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> columnas"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5"></a>df.head(<span class="dv">3</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Muestra estratificada: 50,000 filas x 7 columnas</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
 
 
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">fecha</th>
+<th data-quarto-table-cell-role="th">entidad</th>
+<th data-quarto-table-cell-role="th">bien_juridico_afectado</th>
+<th data-quarto-table-cell-role="th">tipo_delito</th>
+<th data-quarto-table-cell-role="th">subtipo_delito</th>
+<th data-quarto-table-cell-role="th">modalidad</th>
+<th data-quarto-table-cell-role="th">incidencia_delictiva</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">249379</th>
+<td>2021-03-01</td>
+<td>Puebla</td>
+<td>El patrimonio</td>
+<td>Otros delitos contra el patrimonio</td>
+<td>Otros delitos contra el patrimonio</td>
+<td>Otros delitos contra el patrimonio</td>
+<td>26</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">57395</th>
+<td>2016-09-01</td>
+<td>Morelos</td>
+<td>La vida y la Integridad corporal</td>
+<td>Lesiones</td>
+<td>Lesiones dolosas</td>
+<td>No especificado</td>
+<td>144</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">289658</th>
+<td>2022-12-01</td>
+<td>Quintana Roo</td>
+<td>El patrimonio</td>
+<td>Robo</td>
+<td>Robo de vehículo automotor</td>
+<td>Robo de coche de 4 ruedas Con violencia</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>La columna <code>fecha</code>, al ser de tipo datetime, se descompone en tres features numéricas: <code>anio</code>, <code>mes</code> y <code>trimestre</code>. Esto permite al modelo capturar tendencias temporales (tendencia anual, estacionalidad mensual y patrones por trimestre) sin introducir alta cardinalidad como haría un One-Hot de fechas individuales.</p>
+<div id="5cb4bd6f" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>X, y <span class="op">=</span> separar_features_target(df)</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="bu">print</span>(<span class="ss">f"Features: </span><span class="sc">{</span>X<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> columnas"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="bu">print</span>(<span class="ss">f"Columnas: </span><span class="sc">{</span><span class="bu">list</span>(X.columns)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Target (log1p) — media: </span><span class="sc">{</span>y<span class="sc">.</span>mean()<span class="sc">:.3f}</span><span class="ss">, std: </span><span class="sc">{</span>y<span class="sc">.</span>std()<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6"></a>X.head(<span class="dv">3</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Features: 8 columnas
+Columnas: ['entidad', 'bien_juridico_afectado', 'tipo_delito', 'subtipo_delito', 'modalidad', 'anio', 'mes', 'trimestre']
+
+Target (log1p) — media: 1.753, std: 1.990</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">entidad</th>
+<th data-quarto-table-cell-role="th">bien_juridico_afectado</th>
+<th data-quarto-table-cell-role="th">tipo_delito</th>
+<th data-quarto-table-cell-role="th">subtipo_delito</th>
+<th data-quarto-table-cell-role="th">modalidad</th>
+<th data-quarto-table-cell-role="th">anio</th>
+<th data-quarto-table-cell-role="th">mes</th>
+<th data-quarto-table-cell-role="th">trimestre</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">249379</th>
+<td>Puebla</td>
+<td>El patrimonio</td>
+<td>Otros delitos contra el patrimonio</td>
+<td>Otros delitos contra el patrimonio</td>
+<td>Otros delitos contra el patrimonio</td>
+<td>2021</td>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">57395</th>
+<td>Morelos</td>
+<td>La vida y la Integridad corporal</td>
+<td>Lesiones</td>
+<td>Lesiones dolosas</td>
+<td>No especificado</td>
+<td>2016</td>
+<td>9</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">289658</th>
+<td>Quintana Roo</td>
+<td>El patrimonio</td>
+<td>Robo</td>
+<td>Robo de vehículo automotor</td>
+<td>Robo de coche de 4 ruedas Con violencia</td>
+<td>2022</td>
+<td>12</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="preprocesamiento-y-división-traintest" class="level1">
+<h1>Preprocesamiento y división train/test</h1>
+<p>Separamos el 80% de los datos para entrenamiento y el 20% restante para prueba, con una semilla fija para reproducibilidad.</p>
+<p>El preprocesador aplica dos transformaciones dentro del pipeline:</p>
+<ul>
+<li><strong>OneHotEncoder</strong> sobre las columnas categóricas (<code>entidad</code>, <code>bien_juridico_afectado</code>, <code>tipo_delito</code>, <code>subtipo_delito</code>, <code>modalidad</code>). Esto para convertir cada categoría en una columna binaria. Se configura <code>handle_unknown="ignore"</code> para que no falle si aparece una categoría nueva en el conjunto de prueba.</li>
+<li><strong>StandardScaler</strong> sobre las columnas numéricas (<code>anio</code>, <code>mes</code>, <code>trimestre</code>) para estandarizar la media 0 y la desviación a 1.</li>
+</ul>
+<p>Al integrar el preprocesador dentro del <code>Pipeline</code>, se evita el <strong>data leakage</strong>, pues asi el <code>OneHotEncoder</code> y el <code>StandardScaler</code> se ajustan únicamente sobre los datos de entrenamiento en cada pliegue de la validación cruzada.</p>
+<div id="d3fb3701" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>preprocessor <span class="op">=</span> construir_preprocesador(X)</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.20</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="bu">print</span>(<span class="ss">f"Train: </span><span class="sc">{</span>X_train<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:,}</span><span class="ss"> filas"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="bu">print</span>(<span class="ss">f"Test:  </span><span class="sc">{</span>X_test<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:,}</span><span class="ss"> filas"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Train: 40,000 filas
+Test:  10,000 filas</code></pre>
+</div>
+</div>
+</section>
+<section id="entrenamiento-del-modelo" class="level1">
+<h1>Entrenamiento del modelo</h1>
+<p>Utilizamos <strong><code>RandomizedSearchCV</code></strong> para buscar los mejores hiperparámetros del Random Forest. La razón principal por la que ocupamos esto y no <code>GridSearchCV</code> es por que el segundo evalúa todas las combinaciones posibles, mientras que el primero muestrea un número fijo de combinaciones aleatorias, lo que resulta más eficiente con datasets grandes como lo es el nuestro.</p>
+<p>Ocuparemos el siguiente espacio de búsqueda:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>Valores</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>n_estimators</code></td>
+<td>100, 150</td>
+</tr>
+<tr class="even">
+<td><code>max_depth</code></td>
+<td>15, None (sin límite)</td>
+</tr>
+<tr class="odd">
+<td><code>min_samples_split</code></td>
+<td>2, 5</td>
+</tr>
+</tbody>
+</table>
+<p>junto a la siguiente configuración (la cual está hardodeada en <code>src/model/entrenamiento.py</code>): - <code>n_iter=8</code>: evalúa 8 combinaciones aleatorias de los parámetros. - <code>cv=3</code>: validación cruzada con 3 pliegues. - <code>scoring="r2"</code>: optimiza el coeficiente de determinación R². - <code>n_jobs=-1</code>: utiliza todos los núcleos disponibles del procesador.</p>
+<div id="c4349937" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>search <span class="op">=</span> entrenar_random_forest(X_train, y_train, preprocessor)</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="bu">print</span>(<span class="ss">f"Mejores parámetros: </span><span class="sc">{</span>search<span class="sc">.</span>best_params_<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="bu">print</span>(<span class="ss">f"Mejor R² (CV):      </span><span class="sc">{</span>search<span class="sc">.</span>best_score_<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fitting 3 folds for each of 8 candidates, totalling 24 fits
+Mejores parámetros: {'model__n_estimators': 150, 'model__min_samples_split': 2, 'model__max_depth': None}
+Mejor R² (CV):      0.9201</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluación-del-modelo" class="level1">
+<h1>Evaluación del modelo</h1>
+<p>Evaluamos el rendimiento del mejor modelo sobre el conjunto de <strong>prueba</strong> (20% de los datos, no utilizado en el entrenamiento ni en la búsqueda de hiperparámetros).</p>
+<p><strong>Métricas:</strong> - <strong>MAE</strong> (Error Absoluto Medio): error promedio en las mismas unidades que el target (escala log). Un valor de 0.38 indica que, en promedio, la predicción se desvía ~0.38 unidades logarítmicas del valor real. - <strong>MSE</strong> (Error Cuadrático Medio): penaliza más los errores grandes. - <strong>RMSE</strong> (Raíz del Error Cuadrático Medio): en la misma escala que el target, más interpretable que el MSE. - <strong>R²</strong> (Coeficiente de Determinación): proporción de la varianza explicada por el modelo. Un valor de 1.0 es predicción perfecta; 0.0 equivale a predecir siempre la media.</p>
+<div id="c9505aae" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>mejor_modelo <span class="op">=</span> search.best_estimator_</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a>metricas, y_pred <span class="op">=</span> evaluar_modelo(mejor_modelo, X_test, y_test)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>display(metricas)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Metrica</th>
+<th data-quarto-table-cell-role="th">Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>MAE</td>
+<td>0.307301</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>MSE</td>
+<td>0.262411</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>RMSE</td>
+<td>0.512261</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>R2</td>
+<td>0.932790</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<section id="importancia-de-features" class="level2">
+<h2 class="anchored" data-anchor-id="importancia-de-features">Importancia de features</h2>
+<p>El Random Forest permite extraer la <strong>importancia</strong> de cada feature, medida por cuánto reduce la impureza de los nodos del árbol. Dado que las 5 columnas categóricas fueron codificadas con One-Hot (generando cientos de columnas binarias), agrupamos la importancia por columna original para obtener una visión interpretable de qué variables son las que más contribuyen a las predicciones.</p>
+<div id="c9be4c93" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>preprocessor <span class="op">=</span> mejor_modelo.named_steps[<span class="st">"preprocessor"</span>]</span>
+<span id="cb11-2"><a href="#cb11-2"></a>feature_names <span class="op">=</span> mejor_modelo[:<span class="op">-</span><span class="dv">1</span>].get_feature_names_out()</span>
+<span id="cb11-3"><a href="#cb11-3"></a>importances <span class="op">=</span> mejor_modelo[<span class="op">-</span><span class="dv">1</span>].feature_importances_</span>
+<span id="cb11-4"><a href="#cb11-4"></a></span>
+<span id="cb11-5"><a href="#cb11-5"></a>cat_cols <span class="op">=</span> [t[<span class="dv">2</span>] <span class="cf">for</span> t <span class="kw">in</span> preprocessor.transformers_ <span class="cf">if</span> t[<span class="dv">0</span>] <span class="op">==</span> <span class="st">"cat"</span>][<span class="dv">0</span>]</span>
+<span id="cb11-6"><a href="#cb11-6"></a>num_cols <span class="op">=</span> [t[<span class="dv">2</span>] <span class="cf">for</span> t <span class="kw">in</span> preprocessor.transformers_ <span class="cf">if</span> t[<span class="dv">0</span>] <span class="op">==</span> <span class="st">"num"</span>][<span class="dv">0</span>]</span>
+<span id="cb11-7"><a href="#cb11-7"></a></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="kw">def</span> agrupar_feature(nombre):</span>
+<span id="cb11-9"><a href="#cb11-9"></a>    <span class="cf">if</span> nombre.startswith(<span class="st">"num__"</span>):</span>
+<span id="cb11-10"><a href="#cb11-10"></a>        <span class="cf">return</span> nombre[<span class="dv">5</span>:]</span>
+<span id="cb11-11"><a href="#cb11-11"></a>    codificado <span class="op">=</span> nombre[<span class="dv">5</span>:]</span>
+<span id="cb11-12"><a href="#cb11-12"></a>    <span class="cf">for</span> col <span class="kw">in</span> cat_cols:</span>
+<span id="cb11-13"><a href="#cb11-13"></a>        <span class="cf">if</span> codificado.startswith(col <span class="op">+</span> <span class="st">"_"</span>):</span>
+<span id="cb11-14"><a href="#cb11-14"></a>            <span class="cf">return</span> col</span>
+<span id="cb11-15"><a href="#cb11-15"></a>    <span class="cf">return</span> codificado</span>
+<span id="cb11-16"><a href="#cb11-16"></a></span>
+<span id="cb11-17"><a href="#cb11-17"></a>importance_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb11-18"><a href="#cb11-18"></a>    <span class="st">"feature"</span>: feature_names,</span>
+<span id="cb11-19"><a href="#cb11-19"></a>    <span class="st">"importance"</span>: importances</span>
+<span id="cb11-20"><a href="#cb11-20"></a>})</span>
+<span id="cb11-21"><a href="#cb11-21"></a>importance_df[<span class="st">"grupo"</span>] <span class="op">=</span> importance_df[<span class="st">"feature"</span>].<span class="bu">apply</span>(agrupar_feature)</span>
+<span id="cb11-22"><a href="#cb11-22"></a></span>
+<span id="cb11-23"><a href="#cb11-23"></a>importancia_por_grupo <span class="op">=</span> (</span>
+<span id="cb11-24"><a href="#cb11-24"></a>    importance_df.groupby(<span class="st">"grupo"</span>)[<span class="st">"importance"</span>]</span>
+<span id="cb11-25"><a href="#cb11-25"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb11-26"><a href="#cb11-26"></a>    .sort_values(ascending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-27"><a href="#cb11-27"></a>)</span>
+<span id="cb11-28"><a href="#cb11-28"></a></span>
+<span id="cb11-29"><a href="#cb11-29"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb11-30"><a href="#cb11-30"></a>importancia_por_grupo.plot(kind<span class="op">=</span><span class="st">"barh"</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb11-31"><a href="#cb11-31"></a>plt.xlabel(<span class="st">"Importancia acumulada"</span>)</span>
+<span id="cb11-32"><a href="#cb11-32"></a>plt.title(<span class="st">"Importancia de features (agrupada por columna original)"</span>)</span>
+<span id="cb11-33"><a href="#cb11-33"></a>plt.tight_layout()</span>
+<span id="cb11-34"><a href="#cb11-34"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="models_files/figure-html/cell-8-output-1.png" width="949" height="566" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="interpretación-del-modelo" class="level1">
+<h1>Interpretación del Modelo</h1>
+<p>El modelo obtenido tiene las siguientes implicaciones:</p>
+<p><strong>R² = 0.93 — Alta capacidad predictiva.</strong> El 93% de la variación en la incidencia delictiva se explica por la combinación de entidad federativa, clasificación delictiva y variables temporales. Esto indica que el delito en México <strong>no es un fenómeno aleatorio</strong>: sigue patrones sistemáticos y repetibles que el modelo puede capturar.</p>
+<p><strong>Patrones geográficos.</strong> Cada entidad federativa tiene un “perfil delictivo” distintivo. Estados como CDMX, Estado de México y Jalisco concentran volúmenes altos en ciertas categorías, mientras que estados como Colima o Tlaxcala muestran otras dinámicas. La feature <code>entidad</code> captura estas diferencias estructurales.</p>
+<p><strong>Patrones por clasificación delictiva.</strong> La jerarquía <code>bien_juridico → tipo → subtipo → modalidad</code> permite al modelo distinguir entre categorías con volúmenes muy dispares. Por ejemplo, “homicidio” tiene incidencias bajas mientras que “robo” tiene incidencias altas; la modalidad (con/sin violencia) añade granularidad adicional.</p>
+<p><strong>Patrones temporales.</strong> Las features <code>anio</code>, <code>mes</code> y <code>trimestre</code> capturan: - <strong>Tendencia</strong>: incrementos o disminuciones sostenidos a lo largo de los años. - <strong>Estacionalidad</strong>: ciclos mensuales o trimestrales (por ejemplo, incrementos en diciembre por temporadas vacacionales).</p>
+<p><strong>MAE ≈ 0.31 en escala log.</strong> Para interpretar en unidades originales: <code>exp(0.31) ≈ 1.36</code>, lo que significa que el error promedio de predicción es de aproximadamente <strong>36% sobre el valor real</strong>. Para un dataset con valores que van de decenas a miles de incidentes, esto es un margen de error razonable.</p>
+<section id="análisis-gráfico" class="level2">
+<h2 class="anchored" data-anchor-id="análisis-gráfico">Análisis gráfico</h2>
+<p>Las gráficas de <strong>Real vs Predicho</strong> y de <strong>residuales</strong> permiten evaluar visualmente la calidad del ajuste. En un buen modelo, los puntos deben agruparse alrededor de la diagonal en la primera gráfica, y los residuales deben distribuirse simétricamente alrededor de cero en la segunda.</p>
+<div id="909772b0" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>grafica_predicciones(y_test, y_pred)</span>
+<span id="cb12-2"><a href="#cb12-2"></a>grafica_residuales(y_test, y_pred)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="models_files/figure-html/cell-9-output-1.png" width="651" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="models_files/figure-html/cell-9-output-2.png" width="662" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="comparación-con-línea-base" class="level1">
+<h1>Comparación con Línea Base</h1>
+<p>Para verificar que el modelo aporta valor real, lo comparamos contra un <strong>DummyRegressor</strong> que simplemente predice la media del target en cada caso. Si el Random Forest no supera significativamente a este modelo trivial, significaría que las features elegidas no tienen poder predictivo.</p>
+<div id="21947d0a" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Mostrar código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> sklearn.dummy <span class="im">import</span> DummyRegressor</span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb13-3"><a href="#cb13-3"></a></span>
+<span id="cb13-4"><a href="#cb13-4"></a>baseline <span class="op">=</span> Pipeline([</span>
+<span id="cb13-5"><a href="#cb13-5"></a>    (<span class="st">"preprocessor"</span>, preprocessor),</span>
+<span id="cb13-6"><a href="#cb13-6"></a>    (<span class="st">"model"</span>, DummyRegressor(strategy<span class="op">=</span><span class="st">"mean"</span>))</span>
+<span id="cb13-7"><a href="#cb13-7"></a>])</span>
+<span id="cb13-8"><a href="#cb13-8"></a></span>
+<span id="cb13-9"><a href="#cb13-9"></a>baseline.fit(X_train, y_train)</span>
+<span id="cb13-10"><a href="#cb13-10"></a></span>
+<span id="cb13-11"><a href="#cb13-11"></a>baseline_metricas, _ <span class="op">=</span> evaluar_modelo(baseline, X_test, y_test)</span>
+<span id="cb13-12"><a href="#cb13-12"></a>display(baseline_metricas)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Metrica</th>
+<th data-quarto-table-cell-role="th">Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>MAE</td>
+<td>1.719015</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>MSE</td>
+<td>3.904472</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>RMSE</td>
+<td>1.975974</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>R2</td>
+<td>-0.000034</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>El DummyRegressor obtiene un R² ≈ 0 (como es esperado, ya que predecir la media no explica variación). El Random Forest, con un R² significativamente mayor, demuestra que las features utilizadas capturan patrones reales de la incidencia delictiva.</p>
+</section>
+<section id="persistencia-del-modelo" class="level1">
+<h1>Persistencia del modelo</h1>
+<p>Finalmente, guardamos el modelo entrenado en un archivo <code>.joblib</code> para su uso futuro en predicciones o análisis adicionales. Debido al peso del modelo final este se puede descargar desde <a href="https://drive.google.com/file/d/1p3M8-Q3r0L0FgIDpoM59of0usDTnXWrY/view?usp=sharing">aquí</a> para evitar problemas de espacio en el repositorio y de ésta página.</p>
+<p>Sin embargo, la instrucción para guardar el modelo son las siguientes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>guardar_modelo(mejor_modelo, <span class="st">"../models/modelo_incidencia_delictiva.joblib"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="conclusiones-sobre-el-modelo" class="level1">
+<h1>Conclusiones sobre el modelo</h1>
+<p>El modelo de Random Forest logra predecir la incidencia delictiva estatal mensual con un R² de 0.93, superando ampliamente a la línea base (R² ≈ 0). Esto confirma que:</p>
+<ol type="1">
+<li><p>La incidencia delictiva en México está fuertemente determinada por la ubicación geográfica, el tipo de delito y el momento en el tiempo. El 93% de la variación en la incidencia delictiva se explica por la combinación de ubicación geográfica, clasificación delictiva y momento en el tiempo. Esto descarta la hipótesis de que la criminalidad sea un fenómeno aleatorio o caótico: sigue patrones estables y recurrentes que un modelo de aprendizaje automático puede capturar con alta precisión.</p></li>
+<li><p>Las variables utilizadas (entidad, clasificación delictiva, año/mes/trimestre) son suficientes para construir un modelo predictivo robusto. Sobretodo con estos datos más recientes, ya que el EDA mostró que la incidencia delictiva no ha decrecido entre 2015 y 2025, con un incremento notable desde 2022. Además, se observa estacionalidad: los picos se concentran entre marzo y junio en los últimos años (antes eran mayo-agosto). El modelo captura estos ciclos a través de las features <code>anio</code>, <code>mes</code> y <code>trimestre</code>, lo que permite identificar cuándo ocurren los periodos de mayor riesgo.</p></li>
+<li><p>Los patrones delictivos son <strong>estables y predecibles</strong> en condiciones normales, lo cual es relevante para la planeación de políticas de seguridad. En particular, la clasificación delictiva es el predictor más potente, ya que la jerarquía <code>bien_juridico → tipo → subtipo → modalidad</code> permite distinguir entre categorías con volúmenes drásticamente diferentes. Como se vio en el EDA, “Robo” es el delito más reportado , pero la modalidad (con violencia, sin violencia, de vehículo automotor, etc.) añade granularidad que el modelo aprovecha para hacer predicciones más precisas.</p></li>
+</ol>
+<section id="limitaciones" class="level2">
+<h2 class="anchored" data-anchor-id="limitaciones">Limitaciones</h2>
+<ul>
+<li>El modelo aprende patrones históricos y no puede predecir anomalías como pandemias, crisis o cambios de política pública. El caso de 2020 (valores inusualmente bajos por COVID-19) es un ejemplo de evento que el modelo no anticiparía.</li>
+<li>Los datos dependen de denuncias ante el Ministerio Público, por lo que zonas con bajo reporte pueden tener valores artificialmente bajos.</li>
+<li>El modelo identifica correlaciones, no causalidades. Por ejemplo, saber que <em>“CDMX tiene alta incidencia de robo”</em> no explica por qué ocurre, lo cual es algo ajeno a lo que se realiza en este proyecto.</li>
+</ul>
+
+
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -581,7 +1112,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
     <div class="nav-footer-center">
 <p>© 2026 Méndez Ávila, Paredes Zamudio y Sánchez Rosas</p>
-<div class="toc-actions"><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd&quot;/edit/main/chapters/models.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd&quot;/edit/main/chapters/models.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Almacenes y Minería de Datos 26-2</p>
 </div>
