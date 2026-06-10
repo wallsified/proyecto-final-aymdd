@@ -250,3 +250,6 @@ __marimo__/
 
 # uv stuff
 uv.lock
+
+# models
+*.joblib
