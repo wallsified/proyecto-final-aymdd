@@ -24,19 +24,19 @@ def entrenar_random_forest(X_train, y_train, preprocessor):
     ])
 
     param_grid = {
-        "model__n_estimators": [100, 200, 300],
-        "model__max_depth" : [10, 20, 30, None],
-        "model__min_samples_split" : [2, 5, 10],
-        "model__min_samples_leaf" : [1, 2, 4]
+        "model__n_estimators": [100, 200],
+        "model__max_depth" : [20, 30, None],
+        "model__min_samples_split" : [2, 5]
+        #"model__min_samples_leaf" : [1, 2, 4]
     }
 
     grid_search = GridSearchCV(
         estimator=pipeline,
         param_grid=param_grid,
-        cv=5,
+        cv=3,
         scoring="r2",
         n_jobs=-1,
-        verbose=2
+        verbose=3
     )
 
     grid_search.fit(

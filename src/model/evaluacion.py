@@ -25,7 +25,7 @@ def evaluar_modelo(modelo, X_test, y_test):
         metricas : dataframe con los nombre de las métricas y sus valores
         y_pred : las predicciones generadas por el modelo
     '''
-    y_pred = model.predict(X_test)
+    y_pred = modelo.predict(X_test)
 
     mae = mean_absolute_error(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
