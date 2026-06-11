@@ -238,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>El dataset contiene ~414,000 registros de incidencia delictiva estatal , por lo que trabajar con todos estos registros es demasiado pesado en recursos. Es por esto que para este modelo trabajaremos con una muestra estratificada de 50,000 registros que preserva la proporción de tipos de delito.</p>
 <p>El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click <a href="https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/models.ipynb">aquí</a>.</p>
-<div id="ef1a78ad" class="cell" data-execution_count="2">
+<div id="a6114c4a" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> sys</span>
@@ -270,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Carga y preparación de datos</h1>
 <p>Cargamos el dataset limpio resultado del EDA y aplicamos un muestreo estratificado sobre la columna <code>tipo_delito</code> para reducir los ~414,000 registros a 50,000. Esto preserva la distribución de tipos de delito y reduce drásticamente el tiempo de entrenamiento sin comprometer la calidad del modelo, ya que Random Forest muestra rendimientos decrecientes con volúmenes de datos muy grandes.</p>
 <p>Luego, separamos las features de nuestra variable objetivo: <code>incidencia_delictiva</code>, y aplicamos una transformación logarítmica con <code>log1p</code> para compensar el fuerte sesgo a la derecha observado en el EDA.</p>
-<div id="455ebb29" class="cell" data-execution_count="3">
+<div id="f9f111a6" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>RUTA_DATOS <span class="op">=</span> <span class="bu">str</span>(Path.cwd().parent <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"processed"</span> <span class="op">/</span> <span class="st">"INM_estatal_dic25_clean.csv"</span>) <span class="co"># por alguna razón así identificó más fácil la ruta</span></span>
@@ -337,7 +337,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>La columna <code>fecha</code>, al ser de tipo datetime, se descompone en tres features numéricas: <code>anio</code>, <code>mes</code> y <code>trimestre</code>. Esto permite al modelo capturar tendencias temporales (tendencia anual, estacionalidad mensual y patrones por trimestre) sin introducir alta cardinalidad como haría un One-Hot de fechas individuales.</p>
-<div id="5cb4bd6f" class="cell" data-execution_count="4">
+<div id="f87b3e73" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>X, y <span class="op">=</span> separar_features_target(df)</span>
@@ -421,7 +421,7 @@ Target (log1p) — media: 1.753, std: 1.990</code></pre>
 <li><strong>StandardScaler</strong> sobre las columnas numéricas (<code>anio</code>, <code>mes</code>, <code>trimestre</code>) para estandarizar la media 0 y la desviación a 1.</li>
 </ul>
 <p>Al integrar el preprocesador dentro del <code>Pipeline</code>, se evita el <strong>data leakage</strong>, pues asi el <code>OneHotEncoder</code> y el <code>StandardScaler</code> se ajustan únicamente sobre los datos de entrenamiento en cada pliegue de la validación cruzada.</p>
-<div id="d3fb3701" class="cell" data-execution_count="5">
+<div id="8671dd16" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>preprocessor <span class="op">=</span> construir_preprocesador(X)</span>
@@ -465,8 +465,14 @@ Test:  10,000 filas</code></pre>
 </tr>
 </tbody>
 </table>
-<p>junto a la siguiente configuración (la cual está hardodeada en <code>src/model/entrenamiento.py</code>): - <code>n_iter=8</code>: evalúa 8 combinaciones aleatorias de los parámetros. - <code>cv=3</code>: validación cruzada con 3 pliegues. - <code>scoring="r2"</code>: optimiza el coeficiente de determinación R². - <code>n_jobs=-1</code>: utiliza todos los núcleos disponibles del procesador.</p>
-<div id="c4349937" class="cell" data-execution_count="6">
+<p>junto a la siguiente configuración (la cual está hardodeada en <code>src/model/entrenamiento.py</code>):</p>
+<ul>
+<li><code>n_iter=8</code>: evalúa 8 combinaciones aleatorias de los parámetros.</li>
+<li><code>cv=3</code>: validación cruzada con 3 pliegues.</li>
+<li><code>scoring="r2"</code>: optimiza el coeficiente de determinación R².</li>
+<li><code>n_jobs=-1</code>: utiliza todos los núcleos disponibles del procesador.</li>
+</ul>
+<div id="13bb8702" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>search <span class="op">=</span> entrenar_random_forest(X_train, y_train, preprocessor)</span>
@@ -483,9 +489,14 @@ Mejor R² (CV):      0.9201</code></pre>
 </section>
 <section id="evaluación-del-modelo" class="level1">
 <h1>Evaluación del modelo</h1>
-<p>Evaluamos el rendimiento del mejor modelo sobre el conjunto de <strong>prueba</strong> (20% de los datos, no utilizado en el entrenamiento ni en la búsqueda de hiperparámetros).</p>
-<p><strong>Métricas:</strong> - <strong>MAE</strong> (Error Absoluto Medio): error promedio en las mismas unidades que el target (escala log). Un valor de 0.38 indica que, en promedio, la predicción se desvía ~0.38 unidades logarítmicas del valor real. - <strong>MSE</strong> (Error Cuadrático Medio): penaliza más los errores grandes. - <strong>RMSE</strong> (Raíz del Error Cuadrático Medio): en la misma escala que el target, más interpretable que el MSE. - <strong>R²</strong> (Coeficiente de Determinación): proporción de la varianza explicada por el modelo. Un valor de 1.0 es predicción perfecta; 0.0 equivale a predecir siempre la media.</p>
-<div id="c9505aae" class="cell" data-execution_count="7">
+<p>Evaluamos el rendimiento del mejor modelo sobre el conjunto de <strong>prueba</strong> (20% de los datos, no utilizado en el entrenamiento ni en la búsqueda de hiperparámetros) en base a las siguientes métricas:</p>
+<ul>
+<li><strong>MAE</strong> (Error Absoluto Medio): error promedio en las mismas unidades que el target (escala log). Un valor de 0.38 indica que, en promedio, la predicción se desvía ~0.38 unidades logarítmicas del valor real.</li>
+<li><strong>MSE</strong> (Error Cuadrático Medio): penaliza más los errores grandes.</li>
+<li><strong>RMSE</strong> (Raíz del Error Cuadrático Medio): en la misma escala que el target, más interpretable que el MSE.</li>
+<li><strong>R²</strong> (Coeficiente de Determinación): proporción de la varianza explicada por el modelo. Un valor de 1.0 es predicción perfecta; 0.0 equivale a predecir siempre la media.</li>
+</ul>
+<div id="273539c6" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>mejor_modelo <span class="op">=</span> search.best_estimator_</span>
@@ -535,7 +546,7 @@ Mejor R² (CV):      0.9201</code></pre>
 <section id="importancia-de-features" class="level2">
 <h2 class="anchored" data-anchor-id="importancia-de-features">Importancia de features</h2>
 <p>El Random Forest permite extraer la <strong>importancia</strong> de cada feature, medida por cuánto reduce la impureza de los nodos del árbol. Dado que las 5 columnas categóricas fueron codificadas con One-Hot (generando cientos de columnas binarias), agrupamos la importancia por columna original para obtener una visión interpretable de qué variables son las que más contribuyen a las predicciones.</p>
-<div id="c9be4c93" class="cell" data-execution_count="8">
+<div id="cell-feature-importance" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>preprocessor <span class="op">=</span> mejor_modelo.named_steps[<span class="st">"preprocessor"</span>]</span>
@@ -574,9 +585,10 @@ Mejor R² (CV):      0.9201</code></pre>
 <span id="cb11-34"><a href="#cb11-34"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
-<div>
+<div id="feature-importance" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="models_files/figure-html/cell-8-output-1.png" width="949" height="566" class="figure-img"></p>
+<p><img src="models_files/figure-html/feature-importance-output-1.png" width="949" height="566" class="figure-img"></p>
+<figcaption>Importancia de features agrupada por columna original</figcaption>
 </figure>
 </div>
 </div>
@@ -586,15 +598,19 @@ Mejor R² (CV):      0.9201</code></pre>
 <section id="interpretación-del-modelo" class="level1">
 <h1>Interpretación del Modelo</h1>
 <p>El modelo obtenido tiene las siguientes implicaciones:</p>
-<p><strong>R² = 0.93 — Alta capacidad predictiva.</strong> El 93% de la variación en la incidencia delictiva se explica por la combinación de entidad federativa, clasificación delictiva y variables temporales. Esto indica que el delito en México <strong>no es un fenómeno aleatorio</strong>: sigue patrones sistemáticos y repetibles que el modelo puede capturar.</p>
-<p><strong>Patrones geográficos.</strong> Cada entidad federativa tiene un “perfil delictivo” distintivo. Estados como CDMX, Estado de México y Jalisco concentran volúmenes altos en ciertas categorías, mientras que estados como Colima o Tlaxcala muestran otras dinámicas. La feature <code>entidad</code> captura estas diferencias estructurales.</p>
-<p><strong>Patrones por clasificación delictiva.</strong> La jerarquía <code>bien_juridico → tipo → subtipo → modalidad</code> permite al modelo distinguir entre categorías con volúmenes muy dispares. Por ejemplo, “homicidio” tiene incidencias bajas mientras que “robo” tiene incidencias altas; la modalidad (con/sin violencia) añade granularidad adicional.</p>
-<p><strong>Patrones temporales.</strong> Las features <code>anio</code>, <code>mes</code> y <code>trimestre</code> capturan: - <strong>Tendencia</strong>: incrementos o disminuciones sostenidos a lo largo de los años. - <strong>Estacionalidad</strong>: ciclos mensuales o trimestrales (por ejemplo, incrementos en diciembre por temporadas vacacionales).</p>
-<p><strong>MAE ≈ 0.31 en escala log.</strong> Para interpretar en unidades originales: <code>exp(0.31) ≈ 1.36</code>, lo que significa que el error promedio de predicción es de aproximadamente <strong>36% sobre el valor real</strong>. Para un dataset con valores que van de decenas a miles de incidentes, esto es un margen de error razonable.</p>
+<ul>
+<li><strong>R² = 0.93 — Alta capacidad predictiva.</strong> El 93% de la variación en la incidencia delictiva se explica por la combinación de entidad federativa, clasificación delictiva y variables temporales. Esto indica que el delito en México <strong>no es un fenómeno aleatorio</strong>: sigue patrones sistemáticos y repetibles que el modelo puede capturar.</li>
+<li><strong>Patrones geográficos.</strong> Cada entidad federativa tiene un “perfil delictivo” distintivo. Estados como CDMX, Estado de México y Jalisco concentran volúmenes altos en ciertas categorías, mientras que estados como Colima o Tlaxcala muestran otras dinámicas. La feature <code>entidad</code> captura estas diferencias estructurales.</li>
+<li><strong>Patrones por clasificación delictiva.</strong> La jerarquía <code>bien_juridico → tipo → subtipo → modalidad</code> permite al modelo distinguir entre categorías con volúmenes muy dispares. Por ejemplo, “homicidio” tiene incidencias bajas mientras que “robo” tiene incidencias altas; la modalidad (con/sin violencia) añade granularidad adicional.</li>
+<li><strong>Patrones temporales.</strong> Las features <code>anio</code>, <code>mes</code> y <code>trimestre</code> capturan:</li>
+<li><strong>Tendencia</strong>: incrementos o disminuciones sostenidos a lo largo de los años.</li>
+<li><strong>Estacionalidad</strong>: ciclos mensuales o trimestrales (por ejemplo, incrementos en diciembre por temporadas vacacionales).</li>
+<li><strong>MAE ≈ 0.31 en escala log.</strong> Para interpretar en unidades originales: <code>exp(0.31) ≈ 1.36</code>, lo que significa que el error promedio de predicción es de aproximadamente <strong>36% sobre el valor real</strong>. Para un dataset con valores que van de decenas a miles de incidentes, esto es un margen de error razonable.</li>
+</ul>
 <section id="análisis-gráfico" class="level2">
 <h2 class="anchored" data-anchor-id="análisis-gráfico">Análisis gráfico</h2>
 <p>Las gráficas de <strong>Real vs Predicho</strong> y de <strong>residuales</strong> permiten evaluar visualmente la calidad del ajuste. En un buen modelo, los puntos deben agruparse alrededor de la diagonal en la primera gráfica, y los residuales deben distribuirse simétricamente alrededor de cero en la segunda.</p>
-<div id="909772b0" class="cell" data-execution_count="9">
+<div id="8c0c3ba4" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>grafica_predicciones(y_test, y_pred)</span>
@@ -620,7 +636,7 @@ Mejor R² (CV):      0.9201</code></pre>
 <section id="comparación-con-línea-base" class="level1">
 <h1>Comparación con Línea Base</h1>
 <p>Para verificar que el modelo aporta valor real, lo comparamos contra un <strong>DummyRegressor</strong> que simplemente predice la media del target en cada caso. Si el Random Forest no supera significativamente a este modelo trivial, significaría que las features elegidas no tienen poder predictivo.</p>
-<div id="21947d0a" class="cell" data-execution_count="10">
+<div id="62327e43" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> sklearn.dummy <span class="im">import</span> DummyRegressor</span>

@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path.cwd().parent))
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import seaborn as sns
 
 from src import config
@@ -332,7 +333,7 @@ a un delito con ésta modalidad y ser asignado a otra categoria (sobre todo en l
 ```{python}
 #| label: crime-by-year
 #| fig-cap: "Incidencia Delictiva por Año en México (2015-2025)"
-
+dataframe["fecha"] = pd.to_datetime(dataframe["fecha"])  # add this line before groupby
 temporal = dataframe.groupby("fecha")["incidencia_delictiva"].sum().sort_index()
 
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -347,8 +348,11 @@ ax.set_title(
 ax.set_xlabel("Fecha")
 ax.set_ylabel("Incidencia Delictiva Total")
 ax.grid(True, alpha=0.2)
-
-plt.xticks(rotation=45)
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+ax.xaxis.set_minor_locator(mdates.MonthLocator())
+ax.grid(True, which="major", alpha=0.3)
+ax.grid(True, which="minor", alpha=0.1)
 plt.tight_layout()
 plt.show()
 ```

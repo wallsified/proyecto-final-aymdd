@@ -12,7 +12,11 @@ absoluta.
 
 Bajo este enfoque, la pregunta principal que guía el análisis es:
 
-> \emph{¿Qué tipo de delincuencia predomina en cada entidad federativa y qué estados comparten perfiles delictivos similares?}
+\begin{tcolorbox}
+¿Qué tipo de delincuencia predomina en cada entidad federativa y qué estados comparten perfiles delictivos similares?
+\end{tcolorbox}
+
+El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click \href{https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/clustering.ipynb}{aquí}.
 
 \subsection{¿Por qué se decidió usar K-Means?}
 
@@ -54,10 +58,8 @@ se implementaron las siguientes transformaciones mediante la clase \texttt{Crime
   utilizadas por K-Means, evitando que las categorías con mayor dispersión dominen el proceso de agrupamiento.
 \end{itemize}
 
-El siguiente bloque muestra el código empleado para cargar los datos e inicializar el pipeline de clustering:
 
 \begin{lstlisting}[language=Python,caption={Construcción de la matriz de proporciones y estandarización.},label={lst:clustering-pipe-matrix}]
-#| label: clustering-pipe-matrix
 import sys
 from pathlib import Path
 
@@ -84,6 +86,11 @@ clustering_pipe = CrimeClusteringPipeline()
 
 # Transformar los datos y generar la matriz estandarizada
 matrix_pct = clustering_pipe.fit_transform(dataframe)
+\end{lstlisting}
+
+\begin{lstlisting}
+[Clustering] Matriz macro preparada con 32 estados y 7 variables (Bienes Jurídicos).
+[Clustering] El plano visual (PCA 2D) captura el 55.32% de la varianza total de estas categorías
 \end{lstlisting}
 
 \subsection{Consideración sobre la Dimensionalidad y Visualización}
@@ -133,10 +140,9 @@ plt.tight_layout()
 plt.show()
 \end{lstlisting}
 
-% Marcador de posición para la figura de selección de clusters
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{placeholder-hammer.png}
+  \includegraphics[width=0.7\textwidth]{imagenes/k-clusters-selection-output-1.png}
   \caption{Selección del número de clusters mediante el método del codo y la evolución de la silueta (marcador de posición)}
   \label{fig:k-selection}
 \end{figure}
@@ -181,6 +187,25 @@ resumen_clusters = matrix_pct.groupby('cluster').mean()
 resumen_porcentual = (resumen_clusters * 100).round(2).T
 resumen_porcentual
 \end{lstlisting}
+
+\begin{table}[ht]
+\centering
+\caption{Proporción promedio de cada Bien Jurídico Afectado por cluster (en porcentaje)}
+\begin{tabular}{l c c c c}
+\hline
+cluster	& 0	& 1	& 2	& 3 \\
+bien\_juridico\_afectado \\
+El patrimonio & 44.02 & 37.44 & 42.74 & 55.04 \\
+La familia & 10.57 & 14.54 & 19.93 & 11.17 \\
+La libertad y la seguridad sexual & 3.86 & 2.22 & 3.77 & 2.83 \\
+La sociedad & 0.57 & 0.53 & 0.26 & 0.43 \\
+La vida y la Integridad corporal & 18.74 & 11.61 & 13.47 & 11.08 \\
+Libertad personal & 1.05 & 0.37 & 1.93 & 0.69 \\
+Otros bienes jurídicos afectados (del fuero común) & 21.19 & 33.29 & 17.89 & 18.76 \\
+\hline
+\end{tabular}
+\label{tab:cluster-proportions}
+\end{table}
 
 \subsection{Interpretación de los Clusters}
 
@@ -241,8 +266,6 @@ patrones diferenciados dentro del espacio de características, proporcionando un
 estructura de agrupamiento obtenida por el modelo.
 
 \begin{lstlisting}[language=Python,caption={Visualización final de la segmentación en la proyección PCA 2D.},label={lst:clustering-final-visualization}]
-#| label: clustering-final-visualization
-#| fig-cap: "Visualización de la Segmentación de Entidades Federativas en 4 Perfiles Criminales (Proyección PCA 2D)"
 
 # Construir la visualización del Scatter Plot
 plt.figure(figsize=(8, 4), dpi=config.PLOT_DPI)
@@ -280,10 +303,9 @@ plt.tight_layout()
 plt.show()
 \end{lstlisting}
 
-% Marcador de posición para la figura PCA
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\textwidth]{placeholder-hammer.png}
+  \includegraphics[width=0.95\textwidth]{imagenes/clustering-final-visualization-output-1.png}
   \caption{Visualización PCA 2D de la segmentación (marcador de posición)}
   \label{fig:clustering-pca}
 \end{figure}
@@ -291,6 +313,21 @@ plt.show()
 Para comprender la geometría de las entidades federativas en la proyección PCA, analizamos la matriz de cargas (loadings),
 la cual indica la contribución y correlación lineal de cada Bien Jurídico Afectado con las dos primeras componentes
 principales (ejes del plano).
+
+\begin{lstlisting}[language=Python,caption={Extracción y presentación de loadings PCA.},label={lst:clustering-pca-loadings}]
+#| label: clustering-pca-loadings
+# Extraer la matriz de loadings (componentes_ x variables)
+loadings = clustering_pipe.pca.components_
+
+# Construir un DataFrame elegante para analizar la composición
+df_loadings = pd.DataFrame(
+    loadings.T,  # Transponemos para que las variables queden en las filas
+    columns=["Componente Principal 1 (PC1)", "Componente Principal 2 (PC2)"],
+    index=clustering_pipe.features_names
+)
+
+df_loadings.round(3)
+\end{lstlisting}
 
 \begin{table}[ht]
 \centering
@@ -310,21 +347,6 @@ Otros bienes jurídicos afectados & -0.058 & 0.677 \\
 \end{tabular}
 \label{tab:pca-loadings}
 \end{table}
-
-\begin{lstlisting}[language=Python,caption={Extracción y presentación de loadings PCA.},label={lst:clustering-pca-loadings}]
-#| label: clustering-pca-loadings
-# Extraer la matriz de loadings (componentes_ x variables)
-loadings = clustering_pipe.pca.components_
-
-# Construir un DataFrame elegante para analizar la composición
-df_loadings = pd.DataFrame(
-    loadings.T,  # Transponemos para que las variables queden en las filas
-    columns=["Componente Principal 1 (PC1)", "Componente Principal 2 (PC2)"],
-    index=clustering_pipe.features_names
-)
-
-df_loadings.round(3)
-\end{lstlisting}
 
 Los coeficientes muestran que la Componente Principal 1 (PC1) está dominada por un contraste entre \emph{El patrimonio}
 (carga positiva alta) y variables asociadas al entorno familiar y social, como \emph{La familia} y \emph{La libertad y la seguridad

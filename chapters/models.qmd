@@ -124,6 +124,7 @@ Ocuparemos el siguiente espacio de búsqueda:
 | `min_samples_split` | 2, 5 |
 
 junto a la siguiente configuración (la cual está hardodeada en `src/model/entrenamiento.py`):
+
 - `n_iter=8`: evalúa 8 combinaciones aleatorias de los parámetros.
 - `cv=3`: validación cruzada con 3 pliegues.
 - `scoring="r2"`: optimiza el coeficiente de determinación R².
@@ -139,9 +140,8 @@ print(f"Mejor R² (CV):      {search.best_score_:.4f}")
 # Evaluación del modelo
 
 Evaluamos el rendimiento del mejor modelo sobre el conjunto de **prueba** (20% de los datos, no
-utilizado en el entrenamiento ni en la búsqueda de hiperparámetros).
+utilizado en el entrenamiento ni en la búsqueda de hiperparámetros) en base a las siguientes métricas:
 
-**Métricas:**
 - **MAE** (Error Absoluto Medio): error promedio en las mismas unidades que el target (escala log). Un
 valor de 0.38 indica que, en promedio, la predicción se desvía ~0.38 unidades logarítmicas del valor real.
 - **MSE** (Error Cuadrático Medio): penaliza más los errores grandes.
@@ -164,6 +164,8 @@ de columnas binarias), agrupamos la importancia por columna original para obtene
 qué variables son las que más contribuyen a las predicciones.
 
 ```{python}
+#| label: feature-importance
+#| fig-cap: "Importancia de features agrupada por columna original"
 preprocessor = mejor_modelo.named_steps["preprocessor"]
 feature_names = mejor_modelo[:-1].get_feature_names_out()
 importances = mejor_modelo[-1].feature_importances_
@@ -204,26 +206,22 @@ plt.show()
 
 El modelo obtenido tiene las siguientes implicaciones:
 
-**R² = 0.93 — Alta capacidad predictiva.** El 93% de la variación en la incidencia delictiva se explica por
+ - **R² = 0.93 — Alta capacidad predictiva.** El 93% de la variación en la incidencia delictiva se explica por
 la combinación de entidad federativa, clasificación delictiva y variables temporales. Esto indica que el
 delito en México **no es un fenómeno aleatorio**: sigue patrones sistemáticos y repetibles que el modelo
 puede capturar.
-
-**Patrones geográficos.** Cada entidad federativa tiene un "perfil delictivo" distintivo. Estados como
+ - **Patrones geográficos.** Cada entidad federativa tiene un "perfil delictivo" distintivo. Estados como
 CDMX, Estado de México y Jalisco concentran volúmenes altos en ciertas categorías, mientras que estados
 como Colima o Tlaxcala muestran otras dinámicas. La feature `entidad` captura estas diferencias estructurales.
-
-**Patrones por clasificación delictiva.** La jerarquía `bien_juridico → tipo → subtipo → modalidad` permite
+- **Patrones por clasificación delictiva.** La jerarquía `bien_juridico → tipo → subtipo → modalidad` permite
 al modelo distinguir entre categorías con volúmenes muy dispares. Por ejemplo, "homicidio" tiene incidencias
 bajas mientras que "robo" tiene incidencias altas; la modalidad (con/sin violencia) añade granularidad
 adicional.
-
-**Patrones temporales.** Las features `anio`, `mes` y `trimestre` capturan:
+- **Patrones temporales.** Las features `anio`, `mes` y `trimestre` capturan:
 - **Tendencia**: incrementos o disminuciones sostenidos a lo largo de los años.
 - **Estacionalidad**: ciclos mensuales o trimestrales (por ejemplo, incrementos en diciembre por
 temporadas vacacionales).
-
-**MAE ≈ 0.31 en escala log.** Para interpretar en unidades originales: `exp(0.31) ≈ 1.36`, lo que significa
+- **MAE ≈ 0.31 en escala log.** Para interpretar en unidades originales: `exp(0.31) ≈ 1.36`, lo que significa
 que el error promedio de predicción es de aproximadamente **36% sobre el valor real**. Para un dataset con
 valores que van de decenas a miles de incidentes, esto es un margen de error razonable.
 
@@ -234,6 +232,8 @@ En un buen modelo, los puntos deben agruparse alrededor de la diagonal en la pri
 deben distribuirse simétricamente alrededor de cero en la segunda.
 
 ```{python}
+#| label: prediction-residuals-graphs
+#| fig-cap: "Gráficas de Real vs Predicho y Residuales"
 grafica_predicciones(y_test, y_pred)
 grafica_residuales(y_test, y_pred)
 ```

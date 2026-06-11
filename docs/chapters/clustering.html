@@ -598,57 +598,6 @@ window.Quarto = {
 </div>
 </div>
 <p>Para comprender la geometría de las entidades federativas en la proyección PCA, analizamos la matriz de cargas (loadings), la cual indica la contribución y correlación lineal de cada Bien Jurídico Afectado con las dos primeras componentes principales (ejes del plano).</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 27%">
-<col style="width: 36%">
-<col style="width: 36%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Bien Jurídico Afectado</th>
-<th style="text-align: right;">Componente Principal 1 (PC1)</th>
-<th style="text-align: right;">Componente Principal 2 (PC2)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>El patrimonio</td>
-<td style="text-align: right;">0.567</td>
-<td style="text-align: right;">-0.332</td>
-</tr>
-<tr class="even">
-<td>La familia</td>
-<td style="text-align: right;">-0.564</td>
-<td style="text-align: right;">0.030</td>
-</tr>
-<tr class="odd">
-<td>La libertad y la seguridad sexual</td>
-<td style="text-align: right;">-0.459</td>
-<td style="text-align: right;">-0.137</td>
-</tr>
-<tr class="even">
-<td>La sociedad</td>
-<td style="text-align: right;">-0.047</td>
-<td style="text-align: right;">0.322</td>
-</tr>
-<tr class="odd">
-<td>La vida y la integridad corporal</td>
-<td style="text-align: right;">-0.095</td>
-<td style="text-align: right;">-0.325</td>
-</tr>
-<tr class="even">
-<td>Libertad personal</td>
-<td style="text-align: right;">-0.368</td>
-<td style="text-align: right;">-0.450</td>
-</tr>
-<tr class="odd">
-<td>Otros bienes jurídicos afectados</td>
-<td style="text-align: right;">-0.058</td>
-<td style="text-align: right;">0.677</td>
-</tr>
-</tbody>
-</table>
 <div id="cell-clustering-pca-loadings" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Mostrar código</summary>
@@ -718,7 +667,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Los coeficientes muestran que la Componente Principal 1 (PC1) está dominada por un contraste entre <em>El patrimonio</em> (carga positiva alta) y variables asociadas al entorno familiar y social, como <em>La familia</em> y _La libertad y la seguridad sexual (cargas negativas). En consecuencia, las entidades ubicadas hacia la derecha del plano tienden a presentar una mayor proporción relativa de delitos patrimoniales, mientras que las ubicadas hacia la izquierda muestran una mayor participación relativa de las categorías familiares y sociales.</p>
+<p>Los coeficientes muestran que la Componente Principal 1 (PC1) está dominada por un contraste entre <em>El patrimonio</em> (carga positiva alta) y variables asociadas al entorno familiar y social, como <em>La familia</em> y <em>La libertad y la seguridad sexual</em> (cargas negativas). En consecuencia, las entidades ubicadas hacia la derecha del plano tienden a presentar una mayor proporción relativa de delitos patrimoniales, mientras que las ubicadas hacia la izquierda muestran una mayor participación relativa de las categorías familiares y sociales.</p>
 <p>Por su parte, la Componente Principal 2 (PC2) está fuertemente influenciada por <em>Otros bienes jurídicos afectados</em> (0.677). Esto explica por qué las entidades del Cluster 1 como Yucatán, Coahuila, Guanajuato y Tabasco, aparecen desplazadas hacia la parte superior de la gráfica, pues comparten una participación relativamente elevada de esa categoría respecto al resto del país.</p>
 <p>La matriz de cargas también ayuda a interpretar el caso de Tlaxcala, que aparece aislado en la parte inferior derecha. Su ubicación sugiere una combinación de proporciones delictivas distinta a la observada en la mayoría de las entidades de su mismo clúster, aun cuando mantiene una fuerte orientación patrimonial.</p>
 <p>La proximidad o aparente solapamiento de algunos puntos pertenecientes a distintos grupos dentro de la proyección bidimensional es un comportamiento esperado ya que la representación mediante PCA conserva únicamente el 55.32% de la varianza total de los datos, dejando fuera aproximadamente el 44.68% de la información contenida en las dimensiones restantes.</p>

@@ -265,16 +265,6 @@ Para comprender la geometría de las entidades federativas en la proyección PCA
 la cual indica la contribución y correlación lineal de cada Bien Jurídico Afectado con las dos primeras componentes
 principales (ejes del plano).
 
-Bien Jurídico Afectado | Componente Principal 1 (PC1) | Componente Principal 2 (PC2) |
-|---|---:|---:|
-| El patrimonio | 0.567 | -0.332 |
-| La familia | -0.564 | 0.030 |
-| La libertad y la seguridad sexual | -0.459 | -0.137 |
-| La sociedad | -0.047 | 0.322 |
-| La vida y la integridad corporal | -0.095 | -0.325 |
-| Libertad personal | -0.368 | -0.450 |
-| Otros bienes jurídicos afectados | -0.058 | 0.677
-
 ```{python}
 #| label: clustering-pca-loadings
 # Extraer la matriz de loadings (componentes_ x variables)
@@ -292,7 +282,7 @@ df_loadings.round(3)
 
 Los coeficientes muestran que la Componente Principal 1 (PC1) está dominada por un contraste entre _El patrimonio_
 (carga positiva alta) y variables asociadas al entorno familiar y social, como _La familia_ y _La libertad y la seguridad
-sexual (cargas negativas). En consecuencia, las entidades ubicadas hacia la derecha del plano tienden a presentar una
+sexual_ (cargas negativas). En consecuencia, las entidades ubicadas hacia la derecha del plano tienden a presentar una
 mayor proporción relativa de delitos patrimoniales, mientras que las ubicadas hacia la izquierda muestran una mayor
 participación relativa de las categorías familiares y sociales.
 

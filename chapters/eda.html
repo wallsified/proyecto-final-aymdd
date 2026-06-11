@@ -197,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#detección-de-outliers" id="toc-detección-de-outliers" class="nav-link" data-scroll-target="#detección-de-outliers">Detección de Outliers</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd&quot;/edit/main/chapters/eda.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li></ul></div><div class="quarto-code-links"><h2>Enlaces de código</h2><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd"><i class="bi bi-github"></i>Repositorio del Proyecto</a></li><li><a href="example.com"><i class="bi bi-easel-fill"></i>Presentación</a></li><li><a href="example.com"><i class="bi bi-file-earmark-pdf-fill"></i>Descargar PDF</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd&quot;/edit/main/chapters/eda.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li></ul></div><div class="quarto-code-links"><h2>Enlaces de código</h2><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd"><i class="bi bi-github"></i>Repositorio del Proyecto</a></li><li><a href="example.com"><i class="bi bi-easel-fill"></i>Presentación</a></li><li><a href="Análisis-de-Incidencia-Delictiva-en-México-2015-2025.pdf"><i class="bi bi-file-earmark-pdf-fill"></i>Descargar PDF</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -230,7 +230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click <a href="https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/eda.ipynb">aquí</a>.</p>
 <section id="diccionario-de-datos" class="level2">
 <h2 class="anchored" data-anchor-id="diccionario-de-datos">Diccionario de Datos</h2>
-<div id="cell-data-load-dictionary" class="cell" data-execution_count="1">
+<div id="cell-data-load-dictionary" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> sys</span>
@@ -348,7 +348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="overview-del-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="overview-del-dataset">Overview del Dataset</h2>
-<div id="cell-dataset-overview" class="cell" data-execution_count="2">
+<div id="cell-dataset-overview" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>dataframe</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -549,7 +549,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Consideraremos que una entrada es inválida si tiene valores NaN en <code>incidencia_delictiva</code>, <code>fecha</code> y <code>entidad</code>. Una vez detectadas, serán eliminadas.</li>
 <li>Por revisión manual, vemos que algunos estados tienen su nombre completo, como <code>Veracruz de Ignacio de la Llave</code>. Acortaremos el nombre de estos estados para una visualización más limpia de la información.</li>
 </ul>
-<div id="data-cleaning-quality" class="cell" data-execution_count="3">
+<div id="data-cleaning-quality" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>cleaning_pipeline <span class="op">=</span> PreprocessingPipeline(</span>
@@ -582,7 +582,7 @@ CSV limpio guardado en:
 <h2 class="anchored" data-anchor-id="estadísticas-descriptivas-numéricas">Estadísticas Descriptivas Numéricas</h2>
 <p>En base a la naturaleza de nuestro dataset, el análisis estadístico se centrará principalmente en la variable <code>incidencia_delictiva</code>, que representa el número de delitos reportados para cada combinación de estado, tipo de delito y fecha.</p>
 <p>Veamos algunas estadísticas descriptivas clave para esta variable:</p>
-<div id="cell-descriptive-statistics" class="cell" data-execution_count="4">
+<div id="cell-descriptive-statistics" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>repo <span class="op">=</span> DataRepository(<span class="st">"../data/processed/INM_estatal_dic25_clean.csv"</span>)</span>
@@ -630,7 +630,7 @@ CSV limpio guardado en:
 </div>
 <p>La media (52.5) es muy superior a la mediana (2.0), lo que indica un sesgo severo hacia la derecha. La mayoría de los registros tienen baja incidencia (~2 delitos), pero algunos delitos registran valores enormes (siendo 9,968 el valor máximo). Sin embargo, en un contexto real, la CDMX y el EdoMex son probablemente las entidades con valores más altos y más concentrados debido a su población y urbanización. Validaremos esto más adelante.</p>
 <p>En ese sentido, esto no sería (necesariamente) un sesgo en los datos, si no que refleja disparidades geográficas genuinas en la delincuencia. Sin embargo, eso no significa que, nuevamente en un contexto real, no se reporte de la misma manera en otros estados.</p>
-<div id="cell-delective-incidence-histograms" class="cell" data-execution_count="5">
+<div id="cell-delective-incidence-histograms" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">12</span>))</span>
@@ -679,7 +679,7 @@ CSV limpio guardado en:
 </section>
 <section id="estadísticas-descriptivas-categóricas" class="level2">
 <h2 class="anchored" data-anchor-id="estadísticas-descriptivas-categóricas">Estadísticas Descriptivas Categóricas</h2>
-<div id="cell-categorical-stats" class="cell" data-execution_count="6">
+<div id="cell-categorical-stats" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>stats.categorical_stats()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -757,7 +757,7 @@ CSV limpio guardado en:
 <p>Veamos ahora un análisis más detallado de las variables categóricas.</p>
 <section id="delitos-más-comunes" class="level3">
 <h3 class="anchored" data-anchor-id="delitos-más-comunes">Delitos más Comunes</h3>
-<div id="cell-most-common-crimes" class="cell" data-execution_count="7">
+<div id="cell-most-common-crimes" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>crime_counts <span class="op">=</span> dataframe[<span class="st">"tipo_delito"</span>].value_counts().head(<span class="dv">10</span>)</span>
@@ -788,7 +788,7 @@ CSV limpio guardado en:
 </section>
 <section id="incidencia-delictiva-por-estado" class="level3">
 <h3 class="anchored" data-anchor-id="incidencia-delictiva-por-estado">Incidencia Delictiva por Estado</h3>
-<div id="cell-crime-by-state" class="cell" data-execution_count="8">
+<div id="cell-crime-by-state" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="im">from</span> matplotlib.ticker <span class="im">import</span> StrMethodFormatter</span>
@@ -830,7 +830,7 @@ CSV limpio guardado en:
 </div>
 </div>
 <p>Nuestra sospecha anterior que la EdoMex y la CDMX son los estados con más reportes es correcta. Vemos que le siguen Jalisco, Guanajuato y Baja California y que, a pesar de la moda, Aguascalientes no figura dentro de los estados con más delitos reportados.</p>
-<div id="cell-crime-heatmap" class="cell" data-execution_count="9">
+<div id="cell-crime-heatmap" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>top_crimes <span class="op">=</span> dataframe[<span class="st">"tipo_delito"</span>].value_counts().head(<span class="dv">10</span>).index</span>
@@ -878,7 +878,7 @@ CSV limpio guardado en:
 </section>
 <section id="bienes-jurídicos-más-afectados" class="level3">
 <h3 class="anchored" data-anchor-id="bienes-jurídicos-más-afectados">Bienes Jurídicos más Afectados</h3>
-<div id="cell-affected-legal-assets" class="cell" data-execution_count="10">
+<div id="cell-affected-legal-assets" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>bien_juridico <span class="op">=</span> dataframe[<span class="st">"bien_juridico_afectado"</span>].value_counts()</span>
@@ -909,7 +909,7 @@ CSV limpio guardado en:
 </section>
 <section id="modalidad-de-delitos" class="level3">
 <h3 class="anchored" data-anchor-id="modalidad-de-delitos">Modalidad de Delitos</h3>
-<div id="cell-crime-modality" class="cell" data-execution_count="11">
+<div id="cell-crime-modality" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>modalidad <span class="op">=</span> dataframe[<span class="st">"modalidad"</span>].value_counts().head(<span class="dv">15</span>)</span>
@@ -940,7 +940,7 @@ CSV limpio guardado en:
 </section>
 <section id="delincuencia-por-año" class="level3">
 <h3 class="anchored" data-anchor-id="delincuencia-por-año">Delincuencia por Año</h3>
-<div id="cell-crime-by-year" class="cell" data-execution_count="12">
+<div id="cell-crime-by-year" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>dataframe[<span class="st">"fecha"</span>] <span class="op">=</span> pd.to_datetime(dataframe[<span class="st">"fecha"</span>])  <span class="co"># add this line before groupby</span></span>
@@ -977,7 +977,7 @@ CSV limpio guardado en:
 </div>
 <p>Vemos que, desafortunadamente, no existe un decrecimiento notable en cuanto a la delicuencia en este periodo de tiempo. E incluso, desde 2022 hacia adelante es donde se alcanzan números más alto.</p>
 <p>Veamos ahora como se ve ésta evolución dados los meses del año:</p>
-<div id="cell-crime-by-month" class="cell" data-execution_count="13">
+<div id="cell-crime-by-month" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>dataframe[<span class="st">"fecha"</span>] <span class="op">=</span> pd.to_datetime(dataframe[<span class="st">"fecha"</span>])</span>
@@ -1021,7 +1021,7 @@ CSV limpio guardado en:
 <h1>Detección de Outliers</h1>
 <p>Para detectar outliers lo que haremos será ocupar IQR. Por lo anterior notamos que la incidencia delictiva está fuertemente sesgada a la derecha por la CDMX y Edomex, ya que disparan los valores frente a estados pequeños. El z-score asume normalidad y los propios extremos inflan media y desviación, así que ocupar ésta medida reportaría resultados sesgados.</p>
 <p>Para esto lo que haremos será ocupar la clase <code>OutlierDetector</code> que, como su nombre lo indica, identificará los valores atípicos y luego usaremos su método <code>flag()</code> para aplicar ésta identificación a un nuevo dataframe.</p>
-<div id="cell-outlier-detection" class="cell" data-execution_count="14">
+<div id="cell-outlier-detection" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>det <span class="op">=</span> OutlierDetector(dataframe, columns<span class="op">=</span>[<span class="st">"incidencia_delictiva"</span>])</span>
@@ -1065,7 +1065,7 @@ CSV limpio guardado en:
 </div>
 <p>Vemos que del total de registros, 63128 fueron identificados como outliers, lo que representa aproximadamente el 15.25% del dataset. Esto es un porcentaje considerable, pero dado el contexto de la delincuencia en México, es comprensible que existan registros con incidencias extremadamente altas, especialmente en entidades como la CDMX y el EdoMex.</p>
 <p>Sin embargo, es importante destacar que estos outliers no necesariamente representan errores en los datos, sino que reflejan la realidad de la incidencia delictiva en ciertas regiones y periodos. Por lo tanto, en lugar de eliminar estos registros, se ha optado por marcarlos con una nueva columna para su posterior análisis y consideración en cualquier modelado o interpretación de los datos. De esta manera, los datos se muestran como sigue:</p>
-<div id="cell-outlier-flagging" class="cell" data-execution_count="15">
+<div id="cell-outlier-flagging" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>det.flag()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
