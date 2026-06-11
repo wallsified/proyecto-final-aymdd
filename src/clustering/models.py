@@ -71,7 +71,7 @@ class CrimeClusteringPipeline:
             f"[Clustering] Matriz macro preparada con {matrix_pct.shape[0]} estados y {matrix_pct.shape[1]} variables (Bienes Jurídicos)."
         )
         print(
-            f"[Clustering] El plano visual (PCA 2D) captura el {sum(self.pca.explained_variance_ratio_)*100:.2f}% de la varianza total de estas categorías."
+            f"[Clustering] El plano visual (PCA 2D) captura el {sum(self.pca.explained_variance_ratio_) * 100:.2f}% de la varianza total de estas categorías."
         )
 
         return matrix_pct
