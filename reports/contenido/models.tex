@@ -402,6 +402,71 @@ Sin embargo, la instrucción para guardar el modelo es la siguiente:
 guardar_modelo(mejor_modelo, "../models/modelo_incidencia_delictiva.joblib")
 \end{lstlisting}
 
+\subsection{Ejemplo de Predicción}
+Ahora intentaremos predecir los valores en base al modelo. Queremos predecir la incidencia delictiva de los
+siguientes casos:
+
+\begin{table}[ht]
+  \centering
+  \caption{Ejemplo de datos de entrada para predicción de incidencia delictiva}
+  \label{tab:datos_prediccion}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{|l|l|l|l|l|c|c|c|}
+    \hline
+    \textbf{Entidad} & \textbf{Bien jurídico} & \textbf{Tipo de delito} & \textbf{Subtipo de delito} & \textbf{Modalidad} & \textbf{Año} & \textbf{Mes} & \textbf{Trimestre} \\ \hline
+    Ciudad de México & El patrimonio & Robo & Robo de vehiculo automotor & Robo de coche de 4 ruedas Con violencia & 2026 & 5 & 1 \\ \hline
+    Jalisco & La vida y la Integridad corporal & Homicidio & Homicidio doloso & Con arma de fuego & 2026 & 5 & 1 \\ \hline
+  \end{tabular}%
+  }
+\end{table}
+
+
+\begin{lstlisting}
+modelo = cargar_modelo("../models/modelo_incidencia_delictiva.joblib")
+
+# Preparación de los datos de entrada
+# Las features deben coincidir con las usadas en el entrenamiento:
+# - Categóricas: entidad, bien_juridico_afectado, tipo_delito, subtipo_delito, modalidad
+# - Numéricas: anio, mes, trimestre
+
+datos_ejemplo = pd.DataFrame({
+    "entidad": ["Ciudad de México", "Jalisco"],
+    "bien_juridico_afectado": ["El patrimonio", "La vida y la Integridad corporal"],
+    "tipo_delito": ["Robo", "Homicidio"],
+    "subtipo_delito": ["Robo de vehiculo automotor", "Homicidio doloso"],
+    "modalidad": ["Robo de coche de 4 ruedas Con violencia", "Con arma de fuego"],
+    "anio": [2026, 2026],
+    "mes": [5, 5],
+    "trimestre": [1, 1]
+})
+
+
+# El modelo predice en escala logarítmica (log1p), por lo que debemos invertir la transformación
+predicciones_log = modelo.predict(datos_ejemplo)
+predicciones = np.expm1(predicciones_log)  # Inversión de log1p
+
+resultados = datos_ejemplo.copy()
+resultados["incidencia_predicha"] = predicciones.round(0).astype(int)
+
+print("Predicciones de incidencia delictiva:")
+resultados
+\end{lstlisting}
+
+\begin{table}[ht]
+  \centering
+  \caption{Predicciones de incidencia delictiva para los casos de ejemplo}
+  \label{tab:predicciones-ejemplo}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{|l|l|l|l|l|l|c|c|c|c|}
+    \hline
+    \textbf{Entidad} & \textbf{Bien jurídico} & \textbf{Tipo de delito} & \textbf{Subtipo de delito} & \textbf{Modalidad} & \textbf{Año} & \textbf{Mes} & \textbf{Trimestre} & \textbf{Incidencia predicha} \\ \hline
+    Ciudad de México & El patrimonio & Robo & Robo de vehiculo automotor & Robo de coche de 4 ruedas Con violencia & 2026 & 5 & 1 & 50 \\ \hline
+    Jalisco & La vida y la Integridad corporal & Homicidio & Homicidio doloso & Con arma de fuego & 2026 & 5 & 1 & 61 \\ \hline
+  \end{tabular}%
+  }
+\end{table}
+
+
 \subsection{Conclusiones sobre el modelo}
 
 El modelo de Random Forest logra predecir la incidencia delictiva estatal mensual con un R$^2$ de 0.93, superando
