@@ -63,6 +63,13 @@ format:
     smooth-scroll: true
     number-sections: false
     number-depth: 3
+    grid:
+      # verificar tamaños para ajustar en la mayoria de pantallas
+        sidebar-width: 500px
+        #margin-width: 0px
+        #gutter-width: 50px
+    page-navigation: false
+    page-layout: full
     code-links:
       - text: "Repositorio del Proyecto"
         href: "https://github.com/wallsified/proyecto-final-aymdd"
@@ -73,10 +80,4 @@ format:
       - text: "Descargar PDF"
         href: "Análisis-de-Incidencia-Delictiva-en-México-2015-2025.pdf"
         icon: "file-earmark-pdf-fill"
-    grid:
-      # verificar tamaños para ajustar en la mayoria de pantallas
-        sidebar-width: 500px
-        #margin-width: 0px
-        #gutter-width: 50px
-    page-navigation: false
-    page-layout: full
+    
