@@ -201,7 +201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#limitaciones" id="toc-limitaciones" class="nav-link" data-scroll-target="#limitaciones">Limitaciones</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd&quot;/edit/main/chapters/models.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li></ul></div><div class="quarto-code-links"><h2>Enlaces de código</h2><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd"><i class="bi bi-github"></i>Repositorio del Proyecto</a></li><li><a href="example.com"><i class="bi bi-easel-fill"></i>Presentación</a></li><li><a href="example.com"><i class="bi bi-file-earmark-pdf-fill"></i>Descargar PDF</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd&quot;/edit/main/chapters/models.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li></ul></div><div class="quarto-code-links"><h2>Enlaces de código</h2><ul><li><a href="https://github.com/wallsified/proyecto-final-aymdd"><i class="bi bi-github"></i>Repositorio del Proyecto</a></li><li><a href="example.com"><i class="bi bi-easel-fill"></i>Presentación</a></li><li><a href="Análisis-de-Incidencia-Delictiva-en-México-2015-2025.pdf"><i class="bi bi-file-earmark-pdf-fill"></i>Descargar PDF</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -238,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>El dataset contiene ~414,000 registros de incidencia delictiva estatal , por lo que trabajar con todos estos registros es demasiado pesado en recursos. Es por esto que para este modelo trabajaremos con una muestra estratificada de 50,000 registros que preserva la proporción de tipos de delito.</p>
 <p>El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click <a href="https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/models.ipynb">aquí</a>.</p>
-<div id="a6114c4a" class="cell" data-execution_count="1">
+<div id="a1ac4348" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> sys</span>
@@ -270,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Carga y preparación de datos</h1>
 <p>Cargamos el dataset limpio resultado del EDA y aplicamos un muestreo estratificado sobre la columna <code>tipo_delito</code> para reducir los ~414,000 registros a 50,000. Esto preserva la distribución de tipos de delito y reduce drásticamente el tiempo de entrenamiento sin comprometer la calidad del modelo, ya que Random Forest muestra rendimientos decrecientes con volúmenes de datos muy grandes.</p>
 <p>Luego, separamos las features de nuestra variable objetivo: <code>incidencia_delictiva</code>, y aplicamos una transformación logarítmica con <code>log1p</code> para compensar el fuerte sesgo a la derecha observado en el EDA.</p>
-<div id="f9f111a6" class="cell" data-execution_count="2">
+<div id="c1aa96ff" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>RUTA_DATOS <span class="op">=</span> <span class="bu">str</span>(Path.cwd().parent <span class="op">/</span> <span class="st">"data"</span> <span class="op">/</span> <span class="st">"processed"</span> <span class="op">/</span> <span class="st">"INM_estatal_dic25_clean.csv"</span>) <span class="co"># por alguna razón así identificó más fácil la ruta</span></span>
@@ -337,7 +337,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>La columna <code>fecha</code>, al ser de tipo datetime, se descompone en tres features numéricas: <code>anio</code>, <code>mes</code> y <code>trimestre</code>. Esto permite al modelo capturar tendencias temporales (tendencia anual, estacionalidad mensual y patrones por trimestre) sin introducir alta cardinalidad como haría un One-Hot de fechas individuales.</p>
-<div id="f87b3e73" class="cell" data-execution_count="3">
+<div id="4d5b27d6" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>X, y <span class="op">=</span> separar_features_target(df)</span>
@@ -421,7 +421,7 @@ Target (log1p) — media: 1.753, std: 1.990</code></pre>
 <li><strong>StandardScaler</strong> sobre las columnas numéricas (<code>anio</code>, <code>mes</code>, <code>trimestre</code>) para estandarizar la media 0 y la desviación a 1.</li>
 </ul>
 <p>Al integrar el preprocesador dentro del <code>Pipeline</code>, se evita el <strong>data leakage</strong>, pues asi el <code>OneHotEncoder</code> y el <code>StandardScaler</code> se ajustan únicamente sobre los datos de entrenamiento en cada pliegue de la validación cruzada.</p>
-<div id="8671dd16" class="cell" data-execution_count="4">
+<div id="1bbce3ab" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>preprocessor <span class="op">=</span> construir_preprocesador(X)</span>
@@ -472,7 +472,7 @@ Test:  10,000 filas</code></pre>
 <li><code>scoring="r2"</code>: optimiza el coeficiente de determinación R².</li>
 <li><code>n_jobs=-1</code>: utiliza todos los núcleos disponibles del procesador.</li>
 </ul>
-<div id="13bb8702" class="cell" data-execution_count="5">
+<div id="d92c17ce" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>search <span class="op">=</span> entrenar_random_forest(X_train, y_train, preprocessor)</span>
@@ -496,7 +496,7 @@ Mejor R² (CV):      0.9201</code></pre>
 <li><strong>RMSE</strong> (Raíz del Error Cuadrático Medio): en la misma escala que el target, más interpretable que el MSE.</li>
 <li><strong>R²</strong> (Coeficiente de Determinación): proporción de la varianza explicada por el modelo. Un valor de 1.0 es predicción perfecta; 0.0 equivale a predecir siempre la media.</li>
 </ul>
-<div id="273539c6" class="cell" data-execution_count="6">
+<div id="b2e590ef" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>mejor_modelo <span class="op">=</span> search.best_estimator_</span>
@@ -546,7 +546,7 @@ Mejor R² (CV):      0.9201</code></pre>
 <section id="importancia-de-features" class="level2">
 <h2 class="anchored" data-anchor-id="importancia-de-features">Importancia de features</h2>
 <p>El Random Forest permite extraer la <strong>importancia</strong> de cada feature, medida por cuánto reduce la impureza de los nodos del árbol. Dado que las 5 columnas categóricas fueron codificadas con One-Hot (generando cientos de columnas binarias), agrupamos la importancia por columna original para obtener una visión interpretable de qué variables son las que más contribuyen a las predicciones.</p>
-<div id="cell-feature-importance" class="cell" data-execution_count="7">
+<div id="cell-feature-importance" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>preprocessor <span class="op">=</span> mejor_modelo.named_steps[<span class="st">"preprocessor"</span>]</span>
@@ -610,23 +610,24 @@ Mejor R² (CV):      0.9201</code></pre>
 <section id="análisis-gráfico" class="level2">
 <h2 class="anchored" data-anchor-id="análisis-gráfico">Análisis gráfico</h2>
 <p>Las gráficas de <strong>Real vs Predicho</strong> y de <strong>residuales</strong> permiten evaluar visualmente la calidad del ajuste. En un buen modelo, los puntos deben agruparse alrededor de la diagonal en la primera gráfica, y los residuales deben distribuirse simétricamente alrededor de cero en la segunda.</p>
-<div id="8c0c3ba4" class="cell" data-execution_count="8">
+<div id="prediction-residuals-graphs" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>grafica_predicciones(y_test, y_pred)</span>
 <span id="cb12-2"><a href="#cb12-2"></a>grafica_residuales(y_test, y_pred)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
-<div>
+<div id="prediction-residuals-graphs-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="models_files/figure-html/cell-9-output-1.png" width="651" height="523" class="figure-img"></p>
+<p><img src="models_files/figure-html/prediction-residuals-graphs-output-1.png" width="651" height="523" class="figure-img"></p>
+<figcaption>Gráficas de Real vs Predicho y Residuales</figcaption>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="models_files/figure-html/cell-9-output-2.png" width="662" height="523" class="figure-img"></p>
+<p><img src="models_files/figure-html/prediction-residuals-graphs-output-2.png" id="prediction-residuals-graphs-2" width="662" height="523" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -636,7 +637,7 @@ Mejor R² (CV):      0.9201</code></pre>
 <section id="comparación-con-línea-base" class="level1">
 <h1>Comparación con Línea Base</h1>
 <p>Para verificar que el modelo aporta valor real, lo comparamos contra un <strong>DummyRegressor</strong> que simplemente predice la media del target en cada caso. Si el Random Forest no supera significativamente a este modelo trivial, significaría que las features elegidas no tienen poder predictivo.</p>
-<div id="62327e43" class="cell" data-execution_count="9">
+<div id="414ccb19" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Mostrar código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> sklearn.dummy <span class="im">import</span> DummyRegressor</span>

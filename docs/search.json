@@ -84,7 +84,7 @@
     "href": "chapters/models.html#an\u00e1lisis-gr\u00e1fico",
     "title": "Modelo Predictivo de Incidencia Delictiva Estatal",
     "section": "An\u00e1lisis gr\u00e1fico",
-    "text": "An\u00e1lisis gr\u00e1fico\nLas gr\u00e1ficas de Real vs Predicho y de residuales permiten evaluar visualmente la calidad del ajuste. En un buen modelo, los puntos deben agruparse alrededor de la diagonal en la primera gr\u00e1fica, y los residuales deben distribuirse sim\u00e9tricamente alrededor de cero en la segunda.\n\n\nMostrar c\u00f3digo\ngrafica_predicciones(y_test, y_pred)\ngrafica_residuales(y_test, y_pred)",
+    "text": "An\u00e1lisis gr\u00e1fico\nLas gr\u00e1ficas de Real vs Predicho y de residuales permiten evaluar visualmente la calidad del ajuste. En un buen modelo, los puntos deben agruparse alrededor de la diagonal en la primera gr\u00e1fica, y los residuales deben distribuirse sim\u00e9tricamente alrededor de cero en la segunda.\n\n\nMostrar c\u00f3digo\ngrafica_predicciones(y_test, y_pred)\ngrafica_residuales(y_test, y_pred)\n\n\n\n\n\nGr\u00e1ficas de Real vs Predicho y Residuales",
     "crumbs": [
       "<span class='chapter-number'>3</span>\u00a0 <span class='chapter-title'>Modelo Predictivo de Incidencia Delictiva Estatal</span>"
     ]
