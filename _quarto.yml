@@ -36,9 +36,7 @@ book:
     right: "Almacenes y Minería de Datos 26-2"
   page-navigation: true
 
-bibliography: "reports/references.bib"
-nocite: |
-  @*
+
 theme: ["styles/nord.scss"]
 lang: "es"
 
