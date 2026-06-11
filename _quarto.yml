@@ -25,7 +25,6 @@ book:
     - chapters/models.qmd
     - chapters/clustering.qmd
     - chapters/conclusiones.qmd
-  #cover-image: "images/cover.png"
   favicon: "images/favicon.png"
   search: true
   repo-url: https://github.com/wallsified/proyecto-final-aymdd"
@@ -72,7 +71,7 @@ format:
         href: "example.com"
         icon: "easel-fill"
       - text: "Descargar PDF"
-        href: "example.com"
+        href: "Análisis-de-Incidencia-Delictiva-en-México-2015-2025.pdf"
         icon: "file-earmark-pdf-fill"
     grid:
       # verificar tamaños para ajustar en la mayoria de pantallas

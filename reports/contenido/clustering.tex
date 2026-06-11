@@ -1,6 +1,4 @@
----
-title: Clustering y Análisis de Componentes Principales
----
+\section{Clustering y Análisis de Componentes Principales}
 
 El objetivo de este módulo es identificar segmentos, perfiles y patrones latentes en la incidencia delictiva
 de las 32 entidades federativas de México mediante técnicas de agrupamiento no supervisado utilizando el algoritmo
@@ -14,13 +12,15 @@ absoluta.
 
 Bajo este enfoque, la pregunta principal que guía el análisis es:
 
-> _¿Qué tipo de delincuencia predomina en cada entidad federativa y qué estados comparten perfiles delictivos similares?_
+\begin{tcolorbox}
+¿Qué tipo de delincuencia predomina en cada entidad federativa y qué estados comparten perfiles delictivos similares?
+\end{tcolorbox}
 
-El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click [aquí](https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/clustering.ipynb).
+El cuaderno de Jupyter Notebook que acompaña esta sección se encuentra disponible haciendo click \href{https://github.com/wallsified/proyecto-final-aymdd/blob/main/notebooks/clustering.ipynb}{aquí}.
 
-# ¿Por qué se decidio usar K-Means?
+\subsection{¿Por qué se decidió usar K-Means?}
 
-Se seleccionó K-Means como algoritmo de agrupamiento debido a que las variables utilizadas corresponden a proporciones
+Se seleccionó \texttt{K-Means} como algoritmo de agrupamiento debido a que las variables utilizadas corresponden a proporciones
 normalizadas de incidencia delictiva, generando un espacio de características continuo en el que la distancia
 euclidiana constituye una medida adecuada de similitud.
 
@@ -32,30 +32,34 @@ Finalmente, K-Means genera centroides explícitos para cada grupo, lo que permit
 perfiles criminológicos resultantes mediante el comportamiento promedio de los bienes jurídicos afectados en cada
 cluster.
 
-# Preparación de los Datos y Construcción de la Matriz de Proporciones
+\subsection{Preparación de los Datos y Construcción de la Matriz de Proporciones}
 
 Con el fin de identificar patrones en la composición de la incidencia delictiva y evitar que los agrupamientos
 estuvieran determinados principalmente por el tamaño poblacional o el volumen total de delitos de cada entidad,
-se implementaron las siguientes transformaciones mediante la clase `CrimeClusteringPipeline`:
+se implementaron las siguientes transformaciones mediante la clase \texttt{CrimeClusteringPipeline}:
 
-- **Agrupación por Bien Jurídico**: Los distintos tipos y subtipos de delitos se agruparon en las siete categorías de
-Bien Jurídico Afectado definidas en el conjunto de datos. Esto permitió reducir la dimensionalidad y obtener una
-representación más interpretable del fenómeno delictivo.
+\begin{itemize}
+  \item \textbf{Agrupación por Bien Jurídico}: Los distintos tipos y subtipos de delitos se agruparon en las siete categorías de
+  Bien Jurídico Afectado definidas en el conjunto de datos. Esto permitió reducir la dimensionalidad y obtener una
+  representación más interpretable del fenómeno delictivo.
 
-- **Normalización por Fila (Proporciones)**: Para cada entidad federativa se calculó la proporción que representa
-cada bien jurídico respecto al total de delitos registrados en dicha entidad. Se usó la siguiente fórmula:
-$$pi = \frac{Delitos_i}{\sum_j Delitos_j}$$
+  \item \textbf{Normalización por Fila (Proporciones)}: Para cada entidad federativa se calculó la proporción que representa
+  cada bien jurídico respecto al total de delitos registrados en dicha entidad. Se usó la siguiente fórmula:
+  \[
+    p_i = \frac{\mathrm{Delitos}_i}{\sum_j \mathrm{Delitos}_j}
+  \]
 
-De esta manera, cada estado quedó representado por un vector de siete proporciones cuya suma es igual a uno,
-permitiendo comparar la estructura relativa de la incidencia delictiva independientemente de su magnitud absoluta.
+  De esta manera, cada estado quedó representado por un vector de siete proporciones cuya suma es igual a uno,
+  permitiendo comparar la estructura relativa de la incidencia delictiva independientemente de su magnitud absoluta.
 
-- **Estandarización (`StandardScaler`)**: Aunque todas las variables fueron previamente transformadas a proporciones,
-los distintos bienes jurídicos presentan niveles de variabilidad diferentes entre entidades federativas. La
-estandarización permite que cada dimensión contribuya de forma equilibrada al cálculo de las distancias euclidianas
-utilizadas por K-Means, evitando que las categorías con mayor dispersión dominen el proceso de agrupamiento.
+  \item \textbf{Estandarización (\texttt{StandardScaler})}: Aunque todas las variables fueron previamente transformadas a proporciones,
+  los distintos bienes jurídicos presentan niveles de variabilidad diferentes entre entidades federativas. La
+  estandarización permite que cada dimensión contribuya de forma equilibrada al cálculo de las distancias euclidianas
+  utilizadas por K-Means, evitando que las categorías con mayor dispersión dominen el proceso de agrupamiento.
+\end{itemize}
 
-```{python}
-#| label: clustering-pipe-matrix
+
+\begin{lstlisting}[language=Python,caption={Construcción de la matriz de proporciones y estandarización.},label={lst:clustering-pipe-matrix}]
 import sys
 from pathlib import Path
 
@@ -82,9 +86,14 @@ clustering_pipe = CrimeClusteringPipeline()
 
 # Transformar los datos y generar la matriz estandarizada
 matrix_pct = clustering_pipe.fit_transform(dataframe)
-```
+\end{lstlisting}
 
-## Consideración sobre la Dimensionalidad y Visualización
+\begin{lstlisting}
+[Clustering] Matriz macro preparada con 32 estados y 7 variables (Bienes Jurídicos).
+[Clustering] El plano visual (PCA 2D) captura el 55.32% de la varianza total de estas categorías
+\end{lstlisting}
+
+\subsection{Consideración sobre la Dimensionalidad y Visualización}
 
 Con el propósito de visualizar los resultados del agrupamiento, se empleó un modelo de Análisis de Componentes
 Principales (PCA) configurado con dos componentes principales.
@@ -93,18 +102,18 @@ Es importante destacar que el algoritmo K-Means fue entrenado utilizando las sie
 conservando así la totalidad de la información disponible para el proceso de agrupamiento. El PCA se utilizó únicamente
 como una técnica de reducción de dimensionalidad para representar gráficamente los resultados en un plano bidimensional.
 
-La proyección obtenida mediante las dos primeras componentes principales explica el 55.32% de la varianza total
+La proyección obtenida mediante las dos primeras componentes principales explica el 55.32\% de la varianza total
 de los datos. Si bien esta representación no captura la totalidad de la estructura presente en el espacio original
 de siete dimensiones, proporciona una aproximación visual adecuada de los patrones principales y permite interpretar
 de forma intuitiva la separación entre los grupos identificados por K-Means. La información restante permanece contenida
 en las dimensiones no representadas gráficamente, pero sí fue considerada durante el proceso de agrupamiento.
 
-# Selección del Número Óptimo de Clusters
+\subsection{Selección del Número Óptimo de Clusters}
 
 Para determinar la estructura de agrupamiento más adecuada de las entidades federativas, se evaluaron simultáneamente
 el Método del Codo (Inercia) y la evolución del Coeficiente de Silueta en un rango de entre 2 y 8 clústers.
 
-```{python}
+\begin{lstlisting}[language=Python,caption={Selección del número óptimo de clusters (Inercia y Silhouette).},label={lst:k-clusters-selection}]
 #| label: k-clusters-selection
 #| fig-cap: "Selección del número de clusters a usar"
 # Calcular las métricas de Inercia y Silueta para rangos de K del 2 al 8
@@ -129,29 +138,37 @@ axes[1].grid(True)
 
 plt.tight_layout()
 plt.show()
-```
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{imagenes/k-clusters-selection-output-1.png}
+  \caption{Selección del número de clusters mediante el método del codo y la evolución de la silueta (marcador de posición)}
+  \label{fig:k-selection}
+\end{figure}
 
 Analicemos estos resultados:
 
-- **Coeficiente de Silueta**: Podemos observar un máximo local claramente definido en $K=4$, indicando una
-buena combinación entre cohesión y separación de los grupos. Aunque el valor máximo absoluto se alcanza en $K=8$,
-la mejora respecto al valor anterior es poco significativa como para usar este valor en lugar del anterior.
+\begin{itemize}
+  \item \textbf{Coeficiente de Silueta}: Podemos observar un máximo local claramente definido en $K=4$, indicando una
+  buena combinación entre cohesión y separación de los grupos. Aunque el valor máximo absoluto se alcanza en $K=8$,
+  la mejora respecto al valor anterior es poco significativa como para usar este valor en lugar del anterior.
 
-- **Método del Codo (Inercia)**: La curva de inercia presenta una desaceleración apreciable en su tasa de disminución
-alrededor de $K=4$, sugiriendo que incrementos posteriores en el número de clusters producen beneficios progresivamente
-menores.
+  \item \textbf{Método del Codo (Inercia)}: La curva de inercia presenta una desaceleración apreciable en su tasa de disminución
+  alrededor de $K=4$, sugiriendo que incrementos posteriores en el número de clusters producen beneficios progresivamente
+  menores.
+\end{itemize}
 
 Con base en ambos criterios seleccionamos $K=4$ como la configuración final del modelo. Esta elección proporciona
 un equilibrio adecuado entre calidad estadística e interpretabilidad, permitiendo identificar perfiles delictivos
 diferenciados sin fragmentar excesivamente el conjunto de 32 entidades federativas analizadas.
 
-
-# Resultados de la Matriz de Proporciones y Perfil de Clusters
+\subsection{Resultados de la Matriz de Proporciones y Perfil de Clusters}
 
 Una vez entrenado el modelo con $K=4$, se obtuvo la matriz de proporciones promedio para cada cluster, lo que permitió
 caracterizar los perfiles delictivos predominantes en cada grupo de entidades federativas.
 
-```{python}
+\begin{lstlisting}[language=Python,caption={Entrenamiento final y resumen de proporciones por cluster.},label={lst:clustering-matrix-proportions}]
 #|label: clustering-matrix-proportions
 N_CLUSTERS_OPTIMO = 4
 
@@ -169,61 +186,86 @@ resumen_clusters = matrix_pct.groupby('cluster').mean()
 # Multiplicamos por 100 para visualizarlo como porcentaje limpio y transponemos para leerlo mejor
 resumen_porcentual = (resumen_clusters * 100).round(2).T
 resumen_porcentual
-```
+\end{lstlisting}
 
-# Interpretacion de los Clusters
+\begin{table}[ht]
+\centering
+\caption{Proporción promedio de cada Bien Jurídico Afectado por cluster (en porcentaje)}
+\begin{tabular}{l c c c c}
+\hline
+cluster	& 0	& 1	& 2	& 3 \\
+bien\_juridico\_afectado \\
+El patrimonio & 44.02 & 37.44 & 42.74 & 55.04 \\
+La familia & 10.57 & 14.54 & 19.93 & 11.17 \\
+La libertad y la seguridad sexual & 3.86 & 2.22 & 3.77 & 2.83 \\
+La sociedad & 0.57 & 0.53 & 0.26 & 0.43 \\
+La vida y la Integridad corporal & 18.74 & 11.61 & 13.47 & 11.08 \\
+Libertad personal & 1.05 & 0.37 & 1.93 & 0.69 \\
+Otros bienes jurídicos afectados (del fuero común) & 21.19 & 33.29 & 17.89 & 18.76 \\
+\hline
+\end{tabular}
+\label{tab:cluster-proportions}
+\end{table}
 
-## #0 – Perfil de Violencia contra las Personas
+\subsection{Interpretación de los Clusters}
 
-Este grupo se caracteriza por presentar la mayor participación relativa de delitos relacionados con **la vida y la
-integridad corporal (18.74%)**, así como el valor más elevado en **libertad y seguridad sexual (3.86%)**. En comparación
+\subsubsection{\#0 – Perfil de Violencia contra las Personas}
+
+Este grupo se caracteriza por presentar la mayor participación relativa de delitos relacionados con \textbf{la vida y la
+integridad corporal (18.74\%)}, así como el valor más elevado en \textbf{libertad y seguridad sexual (3.86\%)}. En comparación
 con los demás grupos, la incidencia asociada a conductas violentas tiene un peso relativo mayor dentro de la composición
 delictiva total. Entre las entidades pertenecientes a este grupo se encuentran Campeche, Chiapas, Guerrero, Michoacán,
 Estado de México y Oaxaca.
 
-## #1 – Perfil Diversificado de Otros Bienes Jurídicos
+\subsubsection{\#1 – Perfil Diversificado de Otros Bienes Jurídicos}
 
-La característica más distintiva de este grupo es la elevada participación de la categoría **Otros bienes jurídicos
-afectados (33.29%)**, valor considerablemente superior al observado en los demás clústeres. Esto indica una distribución
+La característica más distintiva de este grupo es la elevada participación de la categoría \textbf{Otros bienes jurídicos
+afectados (33.29\%)}, valor considerablemente superior al observado en los demás clústeres. Esto indica una distribución
 delictiva menos concentrada en categorías tradicionales como patrimonio o familia y una mayor presencia relativa de
 delitos clasificados en rubros complementarios del conjunto de datos. Este perfil está conformado por Coahuila,
 Guanajuato, Tabasco y Yucatán.
 
-## #2 – Perfil Familiar y de Libertad Personal
+\subsubsection{\#2 – Perfil Familiar y de Libertad Personal}
 
-Este clúster presenta la mayor proporción de delitos contra **la familia (19.93%)** y contra **la libertad personal
-(1.93%)**, superando al resto de  los grupos en ambas categorías. El resultado sugiere una mayor concentración relativa
+Este clúster presenta la mayor proporción de delitos contra \textbf{la familia (19.93\%)} y contra \textbf{la libertad personal
+(1.93\%)}, superando al resto de los grupos en ambas categorías. El resultado sugiere una mayor concentración relativa
 de problemáticas asociadas al entorno familiar y a conductas que afectan la libertad individual. Las entidades agrupadas
 bajo este perfil son Chihuahua, Durango, Hidalgo, Nayarit, Nuevo León, Quintana Roo, San Luis Potosí, Sinaloa, Sonora,
 Tamaulipas, Veracruz y Zacatecas.
 
-## #3 – Perfil Patrimonial
+\subsubsection{\#3 – Perfil Patrimonial}
 
-Este grupo concentra la mayor participación de delitos contra **el patrimonio (55.04%)**, representando más de la mitad
+Este grupo concentra la mayor participación de delitos contra \textbf{el patrimonio (55.04\%)}, representando más de la mitad
 de la incidencia promedio del clúster. La composición observada refleja una predominancia de delitos patrimoniales,
 como robos, fraudes y conductas relacionadas con afectaciones económicas. Entre las entidades pertenecientes a este
 perfil se encuentran Aguascalientes, Baja California, Baja California Sur, Ciudad de México, Colima, Jalisco, Morelos,
 Puebla, Querétaro y Tlaxcala.
 
-## Tabla de Segmentación
+\subsection{Tabla de Segmentación}
 
-| Clúster | Perfil Identificado | Entidades Federativas Coincidentes |
-| :---: | :--- | :--- |
-| **0** | Perfil de Violencia contra las Personas | Campeche, Chiapas, Guerrero, Michoacán, México, Oaxaca |
-| **1** | Perfil Diversificado / Otros Bienes Jurídicos | Coahuila, Guanajuato, Tabasco, Yucatán |
-| **2** | Perfil Familiar y Libertad Personal | Chihuahua, Durango, Hidalgo, Nayarit, Nuevo León, Quintana Roo, San Luis Potosí, Sinaloa, Sonora, Tamaulipas, Veracruz, Zacatecas |
-| **3** | Perfil Patrimonial | Aguascalientes, Baja California, Baja California Sur, CDMX, Colima, Jalisco, Morelos, Puebla, Querétaro, Tlaxcala |
+\begin{table}[ht]
+\centering
+\caption{Segmentación de entidades por clúster y perfil identificado}
+\begin{tabular}{c l p{8cm}}
+\hline
+\textbf{Clúster} & \textbf{Perfil Identificado} & \textbf{Entidades Federativas Coincidentes} \\
+\hline
+0 & Perfil de Violencia contra las Personas & Campeche, Chiapas, Guerrero, Michoacán, Estado de México, Oaxaca \\
+1 & Perfil Diversificado / Otros Bienes Jurídicos & Coahuila, Guanajuato, Tabasco, Yucatán \\
+2 & Perfil Familiar y Libertad Personal & Chihuahua, Durango, Hidalgo, Nayarit, Nuevo León, Quintana Roo, San Luis Potosí, Sinaloa, Sonora, Tamaulipas, Veracruz, Zacatecas \\
+3 & Perfil Patrimonial & Aguascalientes, Baja California, Baja California Sur, Ciudad de México, Colima, Jalisco, Morelos, Puebla, Querétaro, Tlaxcala \\
+\hline
+\end{tabular}
+\label{tab:cluster-segmentation}
+\end{table}
 
-
-# Proyección PCA
+\subsection{Proyección PCA}
 
 A nivel general, la proyección bidimensional permite apreciar que los cuatro grupos identificados por K-Means muestran
 patrones diferenciados dentro del espacio de características, proporcionando una representación visual coherente con la
 estructura de agrupamiento obtenida por el modelo.
 
-```{python}
-#| label: clustering-final-visualization
-#| fig-cap: "Visualización de la Segmentación de Entidades Federativas en 4 Perfiles Criminales (Proyección PCA 2D)"
+\begin{lstlisting}[language=Python,caption={Visualización final de la segmentación en la proyección PCA 2D.},label={lst:clustering-final-visualization}]
 
 # Construir la visualización del Scatter Plot
 plt.figure(figsize=(8, 4), dpi=config.PLOT_DPI)
@@ -259,13 +301,20 @@ plt.axvline(0, color="grey", linestyle="--", alpha=0.3)
 
 plt.tight_layout()
 plt.show()
-```
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{imagenes/clustering-final-visualization-output-1.png}
+  \caption{Visualización PCA 2D de la segmentación (marcador de posición)}
+  \label{fig:clustering-pca}
+\end{figure}
 
 Para comprender la geometría de las entidades federativas en la proyección PCA, analizamos la matriz de cargas (loadings),
 la cual indica la contribución y correlación lineal de cada Bien Jurídico Afectado con las dos primeras componentes
 principales (ejes del plano).
 
-```{python}
+\begin{lstlisting}[language=Python,caption={Extracción y presentación de loadings PCA.},label={lst:clustering-pca-loadings}]
 #| label: clustering-pca-loadings
 # Extraer la matriz de loadings (componentes_ x variables)
 loadings = clustering_pipe.pca.components_
@@ -278,15 +327,34 @@ df_loadings = pd.DataFrame(
 )
 
 df_loadings.round(3)
-```
+\end{lstlisting}
 
-Los coeficientes muestran que la Componente Principal 1 (PC1) está dominada por un contraste entre _El patrimonio_
-(carga positiva alta) y variables asociadas al entorno familiar y social, como _La familia_ y _La libertad y la seguridad
-sexual_ (cargas negativas). En consecuencia, las entidades ubicadas hacia la derecha del plano tienden a presentar una
+\begin{table}[ht]
+\centering
+\caption{Matriz de cargas (loadings) de las dos primeras componentes principales}
+\begin{tabular}{l r r}
+\hline
+\textbf{Bien Jurídico Afectado} & \textbf{Componente Principal 1 (PC1)} & \textbf{Componente Principal 2 (PC2)} \\
+\hline
+El patrimonio & 0.567 & -0.332 \\
+La familia & -0.564 & 0.030 \\
+La libertad y la seguridad sexual & -0.459 & -0.137 \\
+La sociedad & -0.047 & 0.322 \\
+La vida y la integridad corporal & -0.095 & -0.325 \\
+Libertad personal & -0.368 & -0.450 \\
+Otros bienes jurídicos afectados & -0.058 & 0.677 \\
+\hline
+\end{tabular}
+\label{tab:pca-loadings}
+\end{table}
+
+Los coeficientes muestran que la Componente Principal 1 (PC1) está dominada por un contraste entre \emph{El patrimonio}
+(carga positiva alta) y variables asociadas al entorno familiar y social, como \emph{La familia} y \emph{La libertad y la seguridad
+sexual} (cargas negativas). En consecuencia, las entidades ubicadas hacia la derecha del plano tienden a presentar una
 mayor proporción relativa de delitos patrimoniales, mientras que las ubicadas hacia la izquierda muestran una mayor
 participación relativa de las categorías familiares y sociales.
 
-Por su parte, la Componente Principal 2 (PC2) está fuertemente influenciada por _Otros bienes jurídicos afectados_ (0.677).
+Por su parte, la Componente Principal 2 (PC2) está fuertemente influenciada por \emph{Otros bienes jurídicos afectados} (0.677).
 Esto explica por qué las entidades del Cluster 1 como Yucatán, Coahuila, Guanajuato y Tabasco, aparecen desplazadas hacia
 la parte superior de la gráfica, pues comparten una participación relativamente elevada de esa categoría respecto al resto
 del país.
@@ -296,35 +364,35 @@ Su ubicación sugiere una combinación de proporciones delictivas distinta a la 
 su mismo clúster, aun cuando mantiene una fuerte orientación patrimonial.
 
 La proximidad o aparente solapamiento de algunos puntos pertenecientes a distintos grupos dentro de la proyección bidimensional
-es un comportamiento esperado ya que la representación mediante PCA conserva únicamente el 55.32% de la varianza total de los
-datos, dejando fuera aproximadamente el 44.68% de la información contenida en las dimensiones restantes.
+es un comportamiento esperado ya que la representación mediante PCA conserva únicamente el 55.32\% de la varianza total de los
+datos, dejando fuera aproximadamente el 44.68\% de la información contenida en las dimensiones restantes.
 
-# Perfiles bajo la Proyección PCA
+\subsection{Perfiles bajo la Proyección PCA}
 
-## #1 - Perfil Diversificado
+\subsubsection{\#1 - Perfil Diversificado}
 
 Este grupo, conformado por Yucatán, Coahuila, Guanajuato y Tabasco, es el más claramente distinguible dentro de la
 proyección PCA, desplazándose hacia la región superior del plano. Esta separación visual resulta consistente con el
-análisis de los perfiles promedio, ya que corresponde al clúster con la mayor participación de la categoría **Otros
-bienes jurídicos afectados**, característica que lo diferencia del resto de las entidades federativas.
+análisis de los perfiles promedio, ya que corresponde al clúster con la mayor participación de la categoría \textbf{Otros
+bienes jurídicos afectados}, característica que lo diferencia del resto de las entidades federativas.
 
-## #0 y #2 - Perfiles de Violencia y Entorno Familiar
+\subsubsection{\#0 y \#2 - Perfiles de Violencia y Entorno Familiar}
 
 Ambos grupos ocupan principalmente la región central de la proyección y presentan algunos estados relativamente próximos
 entre sí. Esta situación sugiere que comparten ciertas características en las dos primeras componentes principales. No
 obstante, dicha cercanía la debemos interpretar con cuidado ya que la agrupación definitiva fue realizada en el espacio
 original de siete dimensiones, donde existen diferencias suficientes para que K-Means los clasifique en perfiles distintos.
 
-## #3 - Perfil Patrimonial
+\subsubsection{\#3 - Perfil Patrimonial}
 
 Este grupo exhibe un núcleo relativamente compacto en la región derecha del plano, donde se concentran entidades como
 Ciudad de México, Aguascalientes, Querétaro y Jalisco. La cohesión observada resulta consistente con su perfil
 predominantemente patrimonial, caracterizado por una elevada participación de delitos contra el patrimonio. Adicionalmente,
-destaca el caso de **Tlaxcala**, que aparece visualmente separado del núcleo principal del grupo. Aunque comparte la
+destaca el caso de \textbf{Tlaxcala}, que aparece visualmente separado del núcleo principal del grupo. Aunque comparte la
 misma clasificación patrimonial, su ubicación sugiere una combinación de proporciones delictivas distinta a la observada
 en el resto de las entidades del clúster.
 
 Podemos notar que algunos puntos pertenecientes a distintos grupos aparecen próximos entre sí dentro de la proyección
-bidimensional. Este comportamiento es esperado, ya que la representación mediante PCA conserva únicamente el 55.32% de
-la varianza total de los datos, dejando fuera aproximadamente el 44.68% de la información contenida en las dimensiones
+bidimensional. Este comportamiento es esperado, ya que la representación mediante PCA conserva únicamente el 55.32\% de
+la varianza total de los datos, dejando fuera aproximadamente el 44.68\% de la información contenida en las dimensiones
 restantes.

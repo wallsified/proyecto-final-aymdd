@@ -1,0 +1,15 @@
+\section{Detección de Outliers}
+
+Para detectar outliers lo que haremos será ocupar IQR. Por lo anterior notamos que la incidencia delictiva está fuertemente
+sesgada a la derecha por la CDMX y Edomex, ya que disparan los valores frente a estados pequeños. El z-score asume normalidad
+y los propios extremos inflan media y desviación, así que ocupar ésta medida reportaría resultados sesgados.
+
+
+Vemos que del total de registros, 63128 fueron identificados como outliers, lo que representa aproximadamente el 15.25% del dataset. Esto es
+un porcentaje considerable, pero dado el contexto de la delincuencia en México, es comprensible que existan registros con incidencias
+extremadamente altas, especialmente en entidades como la CDMX y el EdoMex.
+
+Sin embargo, es importante destacar que estos outliers no necesariamente representan errores en los datos, sino que reflejan la realidad de la
+incidencia delictiva en ciertas regiones y periodos. Por lo tanto, en lugar de eliminar estos registros, se ha optado por marcarlos con una
+nueva columna para su posterior análisis y consideración en cualquier modelado o interpretación de los datos. De esta manera, los datos se muestran
+como sigue:
