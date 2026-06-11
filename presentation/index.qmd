@@ -1,0 +1,529 @@
+#
+:::{#title-slide .center}
+México sufre de un serio problema de delicuencia. Y esto, desgraciadamente,
+no ha disminuido considerablemente en 10 años a la fecha.
+
+Al analizar datos sobre la incidencia delictiva en el país, con foco en 2015
+a 2025, y tomando en cuenta los datos obtenidos desde la [Plataforma Nacional de
+Datos Abiertos Méxicana](https://www.datos.gob.mx/dataset/incidencia_delictiva/resource/d9b2792a-33a2-4ea8-8527-210d9e99de5e)
+queremos resolver la siguiente pregunta:
+:::
+
+# ¿Se puede predecir la incidencia delictiva en México?
+
+---
+
+```{python}
+#| label: data-load-dictionary
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path.cwd().parent))
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import seaborn as sns
+
+from src import config
+from src.data import DataRepository
+from src.preprocessing import PreprocessingPipeline
+from src.eda import StatisticsAnalyzer, OutlierDetector
+
+sns.set_theme(style=config.SEABORN_THEME, palette=config.PLOT_PALETTE)
+pd.set_option("display.max_columns", 20)
+pd.set_option("display.width", 140)
+pd.set_option("display.max_colwidth", 200)
+
+repo = DataRepository()
+dataframe = repo.load()
+repo.dictionary()
+```
+
+---
+
+```{python}
+#| label: data-load
+dataframe.head(5)
+```
+---
+
+- 413,952 registros que abarcan desde enero de 2015 hasta diciembre de 2025 (11 años).
+- 32 entidades × 40+ tipos de delito × 132 meses lo que nos permite hacer análisis longitudinales de la evolución del delito en cada estado.
+
+Haremos lo siguiente con el dataset original:
+
+- Borraremos las columnas año y mes para poder trabajar únicamente con fecha, la cual tranformamos a datatime
+- `entidad_federativa` es un duplicado de `entidad`, por lo que borramos ésta columna.
+- `clave_entidad` no nos es de útilidad al ya tener el nombre de las entidades, por lo que borramos ésta columna.
+- Analizamos el dataset en busca de duplicados y valores nulos.
+- Consideraremos que una entrada es inválida si tiene valores NaN en `incidencia_delictiva`, `fecha` y `entidad`. Una vez detectadas,
+serán eliminadas.
+
+---
+
+### Estadísticas Descriptivas Numéricas
+
+```{python}
+#| label: descriptive-statistics
+repo = DataRepository("../data/processed/INM_estatal_dic25_clean.csv")
+dataframe = repo.load()
+stats = StatisticsAnalyzer(dataframe)
+stats.numeric_stats()
+```
+
+```{python}
+#| label: delective-incidence-histograms
+#| fig-cap: "Histogramas de Incidencia Delictiva por Estado"
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+sns.histplot(
+    data=dataframe,
+    x="incidencia_delictiva",
+    bins=50,
+    color="crimson",
+    ax=axes[0]
+)
+axes[0].set_title("A) Histograma en Escala Original\n(Sesgo Extremo hacia la Derecha)", fontsize=12, fontweight="bold")
+axes[0].set_xlabel("Número de Delitos por Registro")
+axes[0].set_ylabel("Frecuencia (Cantidad de Registros)")
+axes[0].grid(True, linestyle="--", alpha=0.5)
+
+df_non_zero = dataframe[dataframe["incidencia_delictiva"] > 0]
+sns.histplot(
+    data=df_non_zero,
+    x="incidencia_delictiva",
+    kde=True,
+    log_scale=True,
+    color="darkblue",
+    ax=axes[1]
+)
+axes[1].set_title("B) Histograma en Escala Logarítmica\n(Estructura Interna de la Incidencia)", fontsize=12, fontweight="bold")
+axes[1].set_xlabel("Número de Delitos por Registro (Escala Log.)")
+axes[1].set_ylabel("Frecuencia (Cantidad de Registros)")
+axes[1].grid(True, linestyle="--", alpha=0.5)
+
+plt.suptitle("Análisis de Distribución de la Incidencia Delictiva en México", fontsize=15, fontweight="bold", y=1.02)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+### Estadísticas Descriptivas Categóricas
+
+```{python}
+#| label: categorical-stats
+stats.categorical_stats()
+```
+
+---
+
+### Delitos más Comunes
+
+```{python}
+#| label: most-common-crimes
+#| fig-cap: "Delitos más Comunes en México (2015-2025)"
+crime_counts = dataframe["tipo_delito"].value_counts().head(10)
+
+fig, ax = plt.subplots(figsize=(10, 4))
+crime_counts.plot(kind="barh", ax=ax, color="steelblue")
+ax.set_title("Top 10 Tipos de Delito", fontsize=13, fontweight="bold")
+ax.set_xlabel("Número de Registros")
+ax.invert_yaxis()
+
+# Añade valores en las barras
+for i, v in enumerate(crime_counts.values):
+    ax.text(v + 1000, i, f"{v:,}", va="center", fontsize=10)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+### Incidencia Delictiva por Estado
+
+```{python}
+#| label: crime-by-state
+#| fig-cap: "Incidencia Delictiva Total por Estado (2015-2025)"
+from matplotlib.ticker import StrMethodFormatter
+
+entidad_counts = (
+    dataframe.groupby("entidad")["incidencia_delictiva"]
+    .sum()
+    .sort_values(ascending=False)
+    .head(10)
+)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bars = ax.bar(entidad_counts.index, entidad_counts.values, color="coral")
+# Formato del eje Y con separadores de miles y sin decimales
+ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
+# Agregamos los valores reales arriba de cada barra con separadores de miles
+ax.bar_label(bars, fmt="{:,.0f}", padding=3, fontsize=10, fontweight="bold")
+
+ax.set_title(
+    "Incidencia Delictiva Total por Entidad (Top 10) - 2015 a 2025",
+    fontsize=15,
+    fontweight="bold",
+    pad=15,
+)
+ax.set_ylabel("Total de Delitos", fontsize=12)
+ax.set_xlabel("Entidad Federativa", fontsize=12)
+ax.tick_params(axis="x", rotation=40)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+### Bienes Jurídicos más Afectados
+
+```{python}
+#| label: affected-legal-assets
+#| fig-cap: "Bienes Jurídicos más Afectados por Delitos en México (2015-2025)"
+bien_juridico = dataframe["bien_juridico_afectado"].value_counts()
+
+fig, ax = plt.subplots(figsize=(6, 6))
+wedges, texts, autotexts = ax.pie(
+    bien_juridico.values, labels=bien_juridico.index, autopct="%1.1f%%", startangle=90
+)
+ax.set_title(
+    "Distribución de Delitos por Bien Jurídico Afectado", fontsize=11, fontweight="bold"
+)
+for autotext in autotexts:
+    autotext.set_color("white")
+
+plt.show()
+```
+
+---
+
+
+### Delincuencia por Año
+
+```{python}
+#| label: crime-by-year
+#| fig-cap: "Incidencia Delictiva por Año en México (2015-2025)"
+dataframe["fecha"] = pd.to_datetime(dataframe["fecha"])  # add this line before groupby
+temporal = dataframe.groupby("fecha")["incidencia_delictiva"].sum().sort_index()
+
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.plot(temporal.index, temporal.values, linewidth=2, color="darkred")
+ax.fill_between(temporal.index, temporal.values, alpha=0.2, color="red")
+
+ax.set_title(
+    "Evolución Temporal de la Incidencia Delictiva (2015-2025)",
+    fontsize=13,
+    fontweight="bold",
+)
+ax.set_xlabel("Fecha")
+ax.set_ylabel("Incidencia Delictiva Total")
+ax.grid(True, alpha=0.2)
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+ax.xaxis.set_minor_locator(mdates.MonthLocator())
+ax.grid(True, which="major", alpha=0.3)
+ax.grid(True, which="minor", alpha=0.1)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+### Detección de Outliers
+
+Para detectar outliers lo que haremos será ocupar IQR. Por lo anterior notamos que la incidencia delictiva está fuertemente
+sesgada a la derecha por la CDMX y Edomex, ya que disparan los valores frente a estados pequeños. El z-score asume normalidad
+y los propios extremos inflan media y desviación, así que ocupar ésta medida reportaría resultados sesgados.
+
+Para esto lo que haremos será ocupar la clase `OutlierDetector` que, como su nombre lo indica, identificará los valores atípicos y luego usaremos
+su método `flag()` para aplicar ésta identificación a un nuevo dataframe.
+
+```{python}
+#| label: outlier-detection
+det = OutlierDetector(dataframe, columns=["incidencia_delictiva"])
+det.summary()
+```
+
+```{python}
+#| label: outlier-flagging
+det.flag().tail(1)
+```
+
+---
+
+### Modelo Predictivo
+
+Ahora, lo que buscamos es construir un modelo de regresión capaz de predecir la incidencia delictiva mensual
+a nivel estatal en México, utilizando como variables predictoras la entidad federativa, el bien jurídico
+afectado, el tipo y subtipo de delito, la modalidad y _features_ temporales (año, mes, trimestre).
+
+Para esto utilizaremos un **Random Forest Regressor** dentro de un pipeline de scikit-learn que incluye lo
+siguiente:
+
+- **Preprocesamiento**: codificación One-Hot de variables categóricas y estandarización de variables
+numéricas.
+- **Búsqueda de hiperparámetros**: Usaremos `RandomizedSearchCV` con validación cruzada de 3 pliegues,
+más eficiente que una búsqueda exhaustiva para este volumen de datos.
+- **Transformación del objetivo**: Aplicaremos `log1p` a la variable objetivo para mitigar el sesgo
+observado en el EDA.
+
+---
+
+### Datos y Preprocesamiento
+
+- **Muestra estratificada**: 50,000 registros de ~414,000 (preserva proporción de tipos de delito)
+- **Split**: 80% train / 20% test
+- **Pipeline**: OneHotEncoder (categóricas) + StandardScaler (numéricas)
+- **Target**: `log1p(incidencia_delictiva)` para mitigar sesgo a la derecha
+
+```{python}
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path.cwd().parent))
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+
+from src.model.preprocesamiento import (
+    cargar_preparar_datos,
+    separar_features_target,
+    construir_preprocesador,
+)
+from src.model.entrenamiento import entrenar_random_forest
+from src.model.evaluacion import evaluar_modelo, grafica_predicciones, grafica_residuales
+from src.model.persistencia import guardar_modelo, cargar_modelo
+#| label: models-data
+RUTA_DATOS = str(Path.cwd().parent / "data" / "processed" / "INM_estatal_dic25_clean.csv")
+
+df = cargar_preparar_datos(RUTA_DATOS)
+X, y = separar_features_target(df)
+preprocessor = construir_preprocesador(X)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, random_state=42
+)
+
+print(f"Muestra estratificada: {df.shape[0]:,} filas x {df.shape[1]} columnas")
+print(f"Train: {X_train.shape[0]:,} filas | Test: {X_test.shape[0]:,} filas")
+print(f"Features: {X.shape[1]} columnas (5 categóricas + 3 numéricas)")
+```
+
+---
+
+### Entrenamiento y Métricas
+
+Utilizamos **`RandomizedSearchCV`** para buscar los mejores hiperparámetros del Random Forest.
+La razón principal por la que ocupamos esto y no `GridSearchCV` es por que el segundo evalúa todas
+las combinaciones posibles, mientras que el primero muestrea un número fijo de combinaciones aleatorias,
+lo que resulta más eficiente con datasets grandes como lo es el nuestro.
+
+Ocuparemos el siguiente espacio de búsqueda:
+
+| Parámetro | Valores |
+|-----------|---------|
+| `n_estimators` | 100, 150 |
+| `max_depth` | 15, None (sin límite) |
+| `min_samples_split` | 2, 5 |
+
+junto a la siguiente configuración:
+
+- `n_iter=8`: evalúa 8 combinaciones aleatorias de los parámetros.
+- `cv=3`: validación cruzada con 3 pliegues.
+- `scoring="r2"`: optimiza el coeficiente de determinación R².
+- `n_jobs=-1`: utiliza todos los núcleos disponibles del procesador.
+
+---
+
+```{python}
+#| label: models-training
+search = entrenar_random_forest(X_train, y_train, preprocessor)
+mejor_modelo = search.best_estimator_
+
+print(f"Mejores parámetros: {search.best_params_}")
+print(f"Mejor R² (CV):      {search.best_score_:.4f}")
+
+metricas, y_pred = evaluar_modelo(mejor_modelo, X_test, y_test)
+display(metricas)
+```
+
+---
+
+
+### Análisis gráfico: Real vs Predicho
+
+```{python}
+#| label: models-predictions-residuals
+#| fig-width: 10
+#| fig-height: 4
+#| out-width: "95%"
+grafica_predicciones(y_test, y_pred)
+```
+
+---
+
+# Clustering y Análisis de Componentes Principales
+
+Ahora buscamos identificar segmentos, perfiles y patrones latentes en la incidencia delictiva
+de las 32 entidades federativas de México mediante técnicas de agrupamiento no supervisado utilizando K-Means
+centrandonos en los valores de los posibles siete Bienes Jurídicos Afectados registrados en cada estado.
+
+Queremos resolver la siguiente pregunta:
+
+> _¿Qué tipo de delincuencia predomina en cada entidad federativa y qué estados comparten perfiles delictivos similares?_
+
+---
+
+```{python}
+#| label: clustering-imports
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path.cwd().parent))
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from src import config
+from src.data import DataRepository
+from src.clustering import CrimeClusteringPipeline
+
+sns.set_theme(style=config.SEABORN_THEME, palette=config.PLOT_PALETTE)
+
+repo = DataRepository(config.PROCESSED_CSV)
+dataframe = repo.load()
+
+clustering_pipe = CrimeClusteringPipeline()
+matrix_pct = clustering_pipe.fit_transform(dataframe)
+```
+
+---
+
+### Selección del Número de Clusters
+
+```{python}
+#| label: clustering-k-selection
+#| fig-cap: "Selección del número de clusters"
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: "85%"
+metrics = clustering_pipe.evaluate_k_options(max_k=8)
+
+fig, axes = plt.subplots(1, 2, figsize=(8, 8), dpi=config.PLOT_DPI)
+
+sns.lineplot(x=metrics["k"], y=metrics["inertia"], marker="o", ax=axes[0], color="royalblue", linewidth=2)
+axes[0].set_title("Método del Codo")
+axes[0].set_xlabel("K")
+axes[0].set_ylabel("Inercia")
+axes[0].grid(True)
+
+sns.lineplot(x=metrics["k"], y=metrics["silhouette"], marker="s", ax=axes[1], color="forestgreen", linewidth=2)
+axes[1].set_title("Coeficiente de Silueta")
+axes[1].set_xlabel("K")
+axes[1].set_ylabel("Silueta")
+axes[1].grid(True)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+### Perfiles Delictivos (K=4)
+
+```{python}
+#| label: clustering-profiles
+N_CLUSTERS_OPTIMO = 4
+
+df_clusters = clustering_pipe.fit_final_model(n_clusters=N_CLUSTERS_OPTIMO)
+matrix_pct = clustering_pipe.prepare_matrix(dataframe)
+matrix_pct['cluster'] = df_clusters.set_index('entidad')['cluster']
+
+resumen_clusters = matrix_pct.groupby('cluster').mean()
+resumen_porcentual = (resumen_clusters * 100).round(2).T
+resumen_porcentual
+```
+
+---
+
+| Clúster | Perfil Identificado | Entidades Federativas Coincidentes |
+| :---: | :--- | :--- |
+| **0** | Perfil de Violencia contra las Personas | Campeche, Chiapas, Guerrero, Michoacán, México, Oaxaca |
+| **1** | Perfil Diversificado / Otros Bienes Jurídicos | Coahuila, Guanajuato, Tabasco, Yucatán |
+| **2** | Perfil Familiar y Libertad Personal | Chihuahua, Durango, Hidalgo, Nayarit, Nuevo León, Quintana Roo, San Luis Potosí, Sinaloa, Sonora, Tamaulipas, Veracruz, Zacatecas |
+| **3** | Perfil Patrimonial | Aguascalientes, Baja California, Baja California Sur, CDMX, Colima, Jalisco, Morelos, Puebla, Querétaro, Tlaxcala |
+
+---
+
+### Proyección PCA (2D)
+
+```{python}
+#| label: clustering-pca
+#| fig-cap: "Segmentación de Entidades en 4 Perfiles (PCA 2D)"
+#| fig-width: 9
+#| fig-height: 5
+#| out-width: "90%"
+plt.figure(figsize=(10, 8), dpi=config.PLOT_DPI)
+
+sns.scatterplot(
+    data=df_clusters,
+    x="pca_1", y="pca_2",
+    hue="cluster", palette="tab10",
+    s=160, style="cluster", alpha=0.9
+)
+
+for i in range(len(df_clusters)):
+    plt.text(
+        x=df_clusters["pca_1"][i] + 0.04,
+        y=df_clusters["pca_2"][i] + 0.04,
+        s=df_clusters["entidad"][i],
+        fontsize=8, alpha=0.8
+    )
+
+plt.title("Segmentación de Entidades Federativas (PCA 2D)")
+plt.xlabel("Componente Principal 1")
+plt.ylabel("Componente Principal 2")
+plt.axhline(0, color="grey", linestyle="--", alpha=0.3)
+plt.axvline(0, color="grey", linestyle="--", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+### Interpretación de la Proyección PCA
+
+| Cluster | Perfil | Posición en PCA | Característica clave |
+|:---:|---|---|---|
+| **#1** | Diversificado | Superior | Mayor participación de "Otros bienes jurídicos" — separación clara del resto |
+| **#0 y #2** | Violencia / Familiar | Central | Cercanos entre sí en 2D, pero diferenciados en el espacio original de 7 dimensiones |
+| **#3** | Patrimonial | Derecha | Núcleo compacto (CDMX, Jalisco, Querétaro). Tlaxcala aparece aislado |
+
+---
+
+### Conclusiones
+
+1. **La criminalidad es predecible.** R² = 0.93 — el 93% de la variación se explica por ubicación, tipo de delito y tiempo.
+
+2. **No ha disminuido en 10 años.** Incremento notable desde 2022. Picos entre marzo-junio en años recientes.
+
+3. **4 perfiles delictivos diferenciados:**
+   - Violencia (sur/centro-pacífico)
+   - Patrimonial (áreas urbanas de alta densidad)
+   - Familiar/libertad personal
+   - Diversificado
+
+4. **Limitaciones:** No anticipa eventos anómalos (COVID, crisis). Depende de denuncias reportadas (subreporte). Correlaciones, no causalidades.
+
+5. **Herramienta útil para políticas públicas.** Permite identificar delitos más probables por estado y predecir incidencia.
+
+---
